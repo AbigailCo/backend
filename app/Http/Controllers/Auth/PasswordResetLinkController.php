@@ -33,7 +33,12 @@ class PasswordResetLinkController extends Controller
                 'email' => [__($status)],
             ]);
         }
-
-        return response()->json(['status' => __($status)]);
+        return response()->json([
+            'status' => __($status),
+            'message' => 'Se ha enviado un enlace de restablecimiento de clave de acceso.',
+            'email' => $request->email,
+            
+        ]);
+       
     }
 }
