@@ -11,7 +11,9 @@ use Illuminate\Validation\ValidationException;
 Route::get('/prueba', function () {
     return response()->json(['message' => 'Anda la prueba'], 200);
 });
-
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user(); // Retorna el usuario autenticado
+});
 /*Route::post('/login', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
