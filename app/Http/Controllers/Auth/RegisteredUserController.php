@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -32,7 +33,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->string('password')),
         ]);
-
+        $role = Role::firstOrCreate(['name' => 'cliente']);
+        $user->assignRole($role);
         event(new Registered($user));
 
         Auth::login($user);
@@ -40,7 +42,12 @@ class RegisteredUserController extends Controller
 
         return response()->json([
             'message' => 'Registro exitoso',
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+            ],
             'token' => $token,
         ]);
     }

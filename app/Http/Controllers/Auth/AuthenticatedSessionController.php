@@ -17,17 +17,22 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): JsonResponse
     {
         $request->authenticate();
-    $request->session()->regenerate();
+        $request->session()->regenerate();
 
-    /** @var \Laravel\Sanctum\HasApiTokens|\App\Models\User $user */
-    $user = Auth::user();
-    $token = $user->createToken('auth_token')->plainTextToken;
+        /** @var \Laravel\Sanctum\HasApiTokens|\App\Models\User $user */
+        $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-    return response()->json([
-        'message' => 'Login exitoso',
-        'user' => $user,
-        'token' => $token,
-    ]);
+        return response()->json([
+            'message' => 'Login exitoso',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+            ],
+            'token' => $token,
+        ]);
     }
 
     /**
