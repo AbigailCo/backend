@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,7 +19,14 @@ Route::middleware('auth:sanctum')->post('/edit-user/{id}', [UserController::clas
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user(); // Retorna el usuario autenticado
+    $user = $request->user();
+
+    return response()->json([
+        'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'roles' => $user->getRoleNames(),
+    ]); 
 });
 
 Route::middleware('auth:sanctum')->post('/user/password', function (Request $request) {
@@ -34,22 +42,8 @@ Route::middleware('auth:sanctum')->post('/user/password', function (Request $req
     return response()->json(['message' => 'Password updated successfully']);
 });
 
-/*Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['Las credenciales son incorrectas.'],
-        ]);
-    }
-
-    return response()->json([
-        'token' => $user->createToken('api-token')->plainTextToken,
-        'user' => $user,
-    ]);
-});*/
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/usuarios', [AdminController::class, 'getUsers']);
+    Route::get('/usuario/{id}', [AdminController::class, 'getUser']);
+    Route::post('/usuario/{id}/edit', [AdminController::class, 'editUser']);
+});
