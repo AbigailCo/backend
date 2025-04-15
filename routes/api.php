@@ -14,7 +14,7 @@ Route::get('/prueba', function () {
     return response()->json(['message' => 'Anda la prueba'], 200);
 });
 
-Route::middleware('auth:sanctum')->post('/edit-user', [UserController::class, 'editUser']);
+Route::middleware('auth:sanctum')->post('/edit-user/{id}', [UserController::class, 'editUser']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
