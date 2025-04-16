@@ -21,6 +21,7 @@ class AuthenticatedSessionController extends Controller
 
         /** @var \Laravel\Sanctum\HasApiTokens|\App\Models\User $user */
         $user = Auth::user();
+       
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

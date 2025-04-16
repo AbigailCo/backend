@@ -78,5 +78,14 @@ class AdminController extends Controller
         return response()->json(['message' => 'Usuario deshabilitado correctamente.']);
         
     }
+    public function enableUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->estado_general_id = 1; 
+        $user->save();
+    
+        return response()->json(['message' => 'Usuario habilitado correctamente.']);
+        
+    }
 
 }
