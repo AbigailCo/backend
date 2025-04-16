@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EstadosGeneralesController;
+use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -49,3 +51,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/usuario/{id}/deshabilitar', [AdminController::class, 'disableUser']);
     Route::post('/usuario/{id}/habilitar', [AdminController::class, 'enableUser']);
 });
+
+Route::get('/estados', [EstadosGeneralesController::class, 'getEstados']);
+Route::get('/roles', [RolesController::class, 'getRoles']);

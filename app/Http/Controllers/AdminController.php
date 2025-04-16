@@ -55,6 +55,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name',
         ]);
         
         $user->update([
@@ -63,7 +64,9 @@ class AdminController extends Controller
             'password' => $validated['password']
                 ? bcrypt($validated['password'])
                 : $user->password,
+           
         ]);
+        $user->syncRoles([$validated['role']]);
        
         return response()->json(['message' => 'Perfil actualizado con exito.']);
     }

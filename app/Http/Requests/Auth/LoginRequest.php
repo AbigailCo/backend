@@ -49,14 +49,14 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        // Verificar si el estado del usuario es 'activo' (estado_general_id == 1)
+     /*    // Verificar si el estado del usuario es 'activo' (estado_general_id == 1)
         if ($user->estado_general_id !== 1) {
             // Si el estado no es activo, arrojar un error con un mensaje adecuado
             throw ValidationException::withMessages([
                 'email' => 'Tu cuenta no está habilitada para iniciar sesión.',
             ]);
         }
-
+ */
         RateLimiter::clear($this->throttleKey());
     }
 
