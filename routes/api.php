@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EstadosGeneralesController;
+use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -57,3 +58,5 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 Route::get('/estados', [EstadosGeneralesController::class, 'getEstados']);
 Route::get('/roles', [RolesController::class, 'getRoles']);
+
+Route::get('/productos', [ProductosController::class, 'getProductos']);
