@@ -3,8 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\EstadoGeneral;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Illuminate\Validation\Rules;
 
 class AdminController extends Controller
 
@@ -89,6 +95,39 @@ class AdminController extends Controller
     
         return response()->json(['message' => 'Usuario habilitado correctamente.']);
         
+    }
+
+    public function storeUser(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'exists:roles,name'],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->string('password')),
+        ]);
+       
+        $user->assignRole([$request['role']]);
+        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
+        event(new Registered($user));
+
+
+        return response()->json([
+            'message' => 'Registro exitoso',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'estado_general_id' => $estadoActivo->id,
+                'roles' => $user->getRoleNames(),
+            ],
+           
+        ]);
     }
 
 }

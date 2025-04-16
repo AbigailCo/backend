@@ -50,6 +50,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/usuario/{id}/edit', [AdminController::class, 'editUser']);
     Route::post('/usuario/{id}/deshabilitar', [AdminController::class, 'disableUser']);
     Route::post('/usuario/{id}/habilitar', [AdminController::class, 'enableUser']);
+    Route::post('/register-user', [AdminController::class, 'storeUser']);
+    
+
 });
 
 Route::get('/estados', [EstadosGeneralesController::class, 'getEstados']);
