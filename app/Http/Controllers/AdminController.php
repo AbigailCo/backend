@@ -17,6 +17,7 @@ class AdminController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'estado_general_id' => $user->estado_general_id,
                 'roles' => $user->getRoleNames(),
             ];
         });
@@ -36,6 +37,7 @@ class AdminController extends Controller
                 'passwoard' => $user->password,
                 'email_verified_at' => $user->email_verified_at,
                 'remember_token' => $user->remember_token,
+                'estado_general_id' => $user->estado_general_id,
                 'roles' => $user->getRoleNames(),
         ];
     }
@@ -64,6 +66,17 @@ class AdminController extends Controller
         ]);
        
         return response()->json(['message' => 'Perfil actualizado con exito.']);
+    }
+
+    
+    public function disableUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->estado_general_id = 2; 
+        $user->save();
+    
+        return response()->json(['message' => 'Usuario deshabilitado correctamente.']);
+        
     }
 
 }

@@ -47,4 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function estado()
+    {
+        return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
+    }
 }

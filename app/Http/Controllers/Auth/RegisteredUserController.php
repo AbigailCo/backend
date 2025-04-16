@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\EstadoGeneral;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -35,6 +36,7 @@ class RegisteredUserController extends Controller
         ]);
         $role = Role::firstOrCreate(['name' => 'cliente']);
         $user->assignRole($role);
+        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
         event(new Registered($user));
 
         Auth::login($user);
@@ -46,6 +48,7 @@ class RegisteredUserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'estado_general_id' => $estadoActivo->id,
                 'roles' => $user->getRoleNames(),
             ],
             'token' => $token,
