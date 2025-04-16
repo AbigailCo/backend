@@ -21,6 +21,15 @@ class AuthenticatedSessionController extends Controller
 
         /** @var \Laravel\Sanctum\HasApiTokens|\App\Models\User $user */
         $user = Auth::user();
+
+        if ($user->estado_general_id !== 1) {
+            Auth::logout();
+            return response()->json([
+                'message' => 'Usuario inactivo',
+                'error' => '420',
+                
+            ]);
+        }
        
         $token = $user->createToken('auth_token')->plainTextToken;
 
