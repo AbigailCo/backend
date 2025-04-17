@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\EstadosGeneralesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -58,5 +60,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 Route::get('/estados', [EstadosGeneralesController::class, 'getEstados']);
 Route::get('/roles', [RolesController::class, 'getRoles']);
+Route::get('/categorias', [CategoriasController::class, 'getCategorias']);
 
 Route::get('/productos', [ProductosController::class, 'getProductos']);
+Route::get('/servicios', [ServiciosController::class, 'getServicios']);
+Route::post('/create-producto', [ProductosController::class, 'storeProducto']);

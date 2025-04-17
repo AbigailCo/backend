@@ -32,4 +32,25 @@ class ProductosController extends Controller
         });
         return response()->json($productos);
     }
+
+    public function storeProducto(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string|max:255',
+            'codigo' => 'required|string|max:255|unique:productos,codigo',
+            'precio' => 'nullable|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
+            'stock_minimo' => 'nullable|integer|min:0',
+            'fecha_vencimiento' => 'nullable|date',
+            'categoria_id' => 'nullable|exists:categorias,id',
+        ]);
+
+        $producto = Producto::create($validatedData);
+
+        return response()->json([
+            'message' => 'Producto creado exitosamente',
+            'producto' => $producto,
+        ]);
+    }
 }
