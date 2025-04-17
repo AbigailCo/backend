@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\UserController;
+use App\Models\Servicio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,10 +59,19 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 });
 
+//Generales
 Route::get('/estados', [EstadosGeneralesController::class, 'getEstados']);
 Route::get('/roles', [RolesController::class, 'getRoles']);
 Route::get('/categorias', [CategoriasController::class, 'getCategorias']);
 
+//Productos
 Route::get('/productos', [ProductosController::class, 'getProductos']);
-Route::get('/servicios', [ServiciosController::class, 'getServicios']);
 Route::post('/create-producto', [ProductosController::class, 'storeProducto']);
+Route::get('/producto/{id}', [ProductosController::class, 'getProducto']);
+Route::post('/producto/{id}/edit', [ProductosController::class, 'editProducto']);
+
+//Servicios
+Route::get('/servicios', [ServiciosController::class, 'getServicios']);
+Route::post('/create-servicio', [ServiciosController::class, 'storeServicio']);
+Route::get('/servicio/{id}', [ServiciosController::class, 'getServicio']);
+Route::post('/servicio/{id}/edit', [ServiciosController::class, 'editServicio']);
