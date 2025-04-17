@@ -30,4 +30,9 @@ class Servicio extends Model
       {
           return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
       }
+
+      public function proveedor()
+      {
+          return $this->belongsTo(User::class, 'proveedor_id');
+      }
 }

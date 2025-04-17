@@ -52,4 +52,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
     }
+    public function servicio()
+    {
+        return $this->belongsTo(Servicio::class, 'proveedor_id');
+    }
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'proveedor_id');
+    }
 }

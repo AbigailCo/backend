@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\EstadosGeneralesController;
 use App\Http\Controllers\ProductosController;
+use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\UserController;
@@ -81,3 +82,7 @@ Route::get('/servicio/{id}', [ServiciosController::class, 'getServicio']);
 Route::post('/servicio/{id}/edit', [ServiciosController::class, 'editServicio']);
 Route::post('/servicio/{id}/deshabilitar', [ServiciosController::class, 'disableServ']);
 Route::post('/servicio/{id}/habilitar', [ServiciosController::class, 'enableServ']);
+
+//Proveedores
+Route::get('/my-productos/{id}', [ProveedoresController::class, 'myProductos']);
+Route::get('/my-servicios/{id}', [ProveedoresController::class, 'myServicios']);
