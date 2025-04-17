@@ -15,17 +15,32 @@ class CategoriasSeeder extends Seeder
     {
         Categoria::firstOrCreate(
             ['id' => 1],
-            ['nombre' => 'Categoria1', 'label' => 'Categoria1', 'value' => 'cat1', 'descripcion' => 'Primera categoria']
+            [
+                'nombre' => 'Categoria1',
+                'label' => 'Categoria1',
+                'value' => 'cat1',
+                'descripcion' => 'Primera categoria'
+            ]
         );
-    
+
         Categoria::firstOrCreate(
             ['id' => 2],
-            ['nombre' => 'Categoria2', 'label' => 'Categoria2', 'value' => 'cat2', 'descripcion' => 'Segunda categoria']
+            [
+                'nombre' => 'Categoria2',
+                'label' => 'Categoria2',
+                'value' => 'cat2',
+                'descripcion' => 'Segunda categoria'
+            ]
         );
-    
+
         Categoria::firstOrCreate(
             ['id' => 3],
-            ['nombre' => 'Categoria3', 'label' => 'Categoria3', 'value' => 'cat3', 'descripcion' => 'Tercera categoria']
+            [
+                'nombre' => 'Categoria3',
+                'label' => 'Categoria3',
+                'value' => 'cat3',
+                'descripcion' => 'Tercera categoria'
+            ]
         );
     }
 }

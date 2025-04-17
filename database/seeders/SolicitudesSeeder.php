@@ -1,0 +1,44 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\EstadoGeneral;
+use App\Models\Solicitud;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class SolicitudesSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
+        Solicitud::firstOrCreate(
+            ['id' => 1],
+            [
+                'cliente_id' => '1',
+                'proveedor_id' => '2',
+                'producto_id' => '1',
+                'mensaje_opcional' => 'creado con el seeder',
+                'estado_general_id' => $estadoActivo->id,
+                'fecha_solicitud' => '2024-12-31',
+                'fecha_respuesta' =>'2024-12-31',
+               
+            ]
+        );
+        Solicitud::firstOrCreate(
+            ['id' => 2],
+            [
+                'cliente_id' => '1',
+                'proveedor_id' => '2',
+                'servicio_id' => '1',
+                'mensaje_opcional' => 'creado con el seeder',
+                'estado_general_id' => $estadoActivo->id,
+                'fecha_solicitud' => '2024-12-31',
+                'fecha_respuesta' =>'2024-12-31',               
+            ]
+        );
+    }
+}

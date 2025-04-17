@@ -28,5 +28,17 @@ class EstadosGeneralesSeeder extends Seeder
             ['id' => 3],
             ['nombre' => 'Eliminado', 'label' => 'Eliminado', 'value' => 'eli', 'descripcion' => 'Usuario eliminado lógicamente']
         );
+        EstadoGeneral::firstOrCreate(
+            ['id' => 4],
+            ['nombre' => 'Pendiente', 'label' => 'Pendiente', 'value' => 'pend', 'descripcion' => 'Solicitud pendiente de respuesta']
+        );
+        EstadoGeneral::firstOrCreate(
+            ['id' => 5],
+            ['nombre' => 'Aprobada', 'label' => 'Aprobada', 'value' => 'apro', 'descripcion' => 'Solicitud aprobada']
+        );
+        EstadoGeneral::firstOrCreate(
+            ['id' => 6],
+            ['nombre' => 'Rechazada', 'label' => 'Rechazada', 'value' => 'recha', 'descripcion' => 'Solicitud rechazada']
+        );
     }
 }
