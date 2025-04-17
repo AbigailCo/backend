@@ -35,6 +35,32 @@ class ProductosController extends Controller
         return response()->json($productos);
     }
 
+    public function getProductosHabi()
+    {
+        $productos = Producto::with('categoria')->where('estado_general_id', 1)->get()->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'descripcion' => $producto->descripcion,
+                'codigo' => $producto->codigo,
+                'precio' => $producto->precio,
+                'stock' => $producto->stock,
+                'stock_minimo' => $producto->stock_minimo,
+                'fecha_vencimiento' => $producto->fecha_vencimiento,
+                'estado_general_id' => $producto->estado_general_id,
+                'categoria_id' => $producto->categoria_id,
+                'categoria' => $producto->categoria ? [
+                    'id' => $producto->categoria->id,
+                    'nombre' => $producto->categoria->nombre,
+                    'label' => $producto->categoria->label,
+                    'value' => $producto->categoria->value,
+                    'descripcion' => $producto->categoria->descripcion,
+                ] : null,
+            ];
+        });
+        return response()->json($productos);
+    }
+
     public function getProducto($id)
     {
         $producto = Producto::findOrFail($id);

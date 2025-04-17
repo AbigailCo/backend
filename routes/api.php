@@ -66,6 +66,7 @@ Route::get('/categorias', [CategoriasController::class, 'getCategorias']);
 
 //Productos
 Route::get('/productos', [ProductosController::class, 'getProductos']);
+Route::get('/productos-habi', [ProductosController::class, 'getProductosHabi']);
 Route::post('/create-producto', [ProductosController::class, 'storeProducto']);
 Route::get('/producto/{id}', [ProductosController::class, 'getProducto']);
 Route::post('/producto/{id}/edit', [ProductosController::class, 'editProducto']);
@@ -74,6 +75,7 @@ Route::post('/producto/{id}/habilitar', [ProductosController::class, 'enableProd
 
 //Servicios
 Route::get('/servicios', [ServiciosController::class, 'getServicios']);
+Route::get('/servicios-habi', [ServiciosController::class, 'getServiciosHabi']);
 Route::post('/create-servicio', [ServiciosController::class, 'storeServicio']);
 Route::get('/servicio/{id}', [ServiciosController::class, 'getServicio']);
 Route::post('/servicio/{id}/edit', [ServiciosController::class, 'editServicio']);
