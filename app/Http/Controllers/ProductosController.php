@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\EstadoGeneral;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,7 @@ class ProductosController extends Controller
                 'stock' => $producto->stock,
                 'stock_minimo' => $producto->stock_minimo,
                 'fecha_vencimiento' => $producto->fecha_vencimiento,
+                'estado_general_id' => $producto->estado_general_id,
                 'categoria_id' => $producto->categoria_id,
                 'categoria' => $producto->categoria ? [
                     'id' => $producto->categoria->id,
@@ -45,6 +47,7 @@ class ProductosController extends Controller
             'stock' => $producto->stock,
             'stock_minimo' => $producto->stock_minimo,
             'fecha_vencimiento' => $producto->fecha_vencimiento,
+            'estado_general_id' => $producto->estado_general_id,
             'categoria_id' => $producto->categoria_id,
             // 'categoria' => $producto->categoria ? [
             //     'id' => $producto->categoria->id,
@@ -68,13 +71,32 @@ class ProductosController extends Controller
             'fecha_vencimiento' => 'nullable|date',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
-
+        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
         $producto = Producto::create($validatedData);
 
         return response()->json([
             'message' => 'Producto creado exitosamente',
             'producto' => $producto,
         ]);
+    }
+
+    public function disableProd($id)
+    {
+        $user = Producto::findOrFail($id);
+        $user->estado_general_id = 2; 
+        $user->save();
+    
+        return response()->json(['message' => 'Producto deshabilitado correctamente.']);
+        
+    }
+    public function enableProd($id)
+    {
+        $user = Producto::findOrFail($id);
+        $user->estado_general_id = 1; 
+        $user->save();
+    
+        return response()->json(['message' => 'Producto habilitado correctamente.']);
+        
     }
 
     public function editProducto(Request $request, $id)

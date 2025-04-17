@@ -22,4 +22,12 @@ class EstadoGeneral extends Model
     {
         return $this->hasMany(User::class, 'estado_general_id');
     }
+    public function productos()
+    {
+        return $this->hasMany(Producto::class, 'estado_general_id');
+    }
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class, 'estado_general_id');
+    }
 }

@@ -69,9 +69,13 @@ Route::get('/productos', [ProductosController::class, 'getProductos']);
 Route::post('/create-producto', [ProductosController::class, 'storeProducto']);
 Route::get('/producto/{id}', [ProductosController::class, 'getProducto']);
 Route::post('/producto/{id}/edit', [ProductosController::class, 'editProducto']);
+Route::post('/producto/{id}/deshabilitar', [ProductosController::class, 'disableProd']);
+Route::post('/producto/{id}/habilitar', [ProductosController::class, 'enableProd']);
 
 //Servicios
 Route::get('/servicios', [ServiciosController::class, 'getServicios']);
 Route::post('/create-servicio', [ServiciosController::class, 'storeServicio']);
 Route::get('/servicio/{id}', [ServiciosController::class, 'getServicio']);
 Route::post('/servicio/{id}/edit', [ServiciosController::class, 'editServicio']);
+Route::post('/servicio/{id}/deshabilitar', [ServiciosController::class, 'disableServ']);
+Route::post('/servicio/{id}/habilitar', [ServiciosController::class, 'enableServ']);

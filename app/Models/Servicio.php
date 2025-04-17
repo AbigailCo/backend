@@ -26,8 +26,8 @@ class Servicio extends Model
           return $this->belongsTo(Categoria::class, 'categoria_id');
       }
      
-      // public function estadoGeneral()
-      // {
-      //     return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
-      // }
+      public function estadoGeneral()
+      {
+          return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
+      }
 }

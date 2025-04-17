@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\EstadoGeneral;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,7 @@ class ServiciosController extends Controller
                 'stock_minimo' => $servicio->stock_minimo,
                 'fecha_vencimiento' => $servicio->fecha_vencimiento,
                 'categoria_id' => $servicio->categoria_id,
+                'estado_general_id' => $servicio->estado_general_id,
                 'categoria' => $servicio->categoria ? [
                     'id' => $servicio->categoria->id,
                     'nombre' => $servicio->categoria->nombre,
@@ -45,6 +47,7 @@ class ServiciosController extends Controller
                 'stock' => $servicio->stock,
                 'stock_minimo' => $servicio->stock_minimo,
                 'fecha_vencimiento' => $servicio->fecha_vencimiento,
+                'estado_general_id' => $servicio->estado_general_id,
                 'categoria_id' => $servicio->categoria_id,
                 // 'categoria' => $servicio->categoria ? [
                 //     'id' => $servicio->categoria->id,
@@ -75,7 +78,7 @@ class ServiciosController extends Controller
 
         return response()->json([
             'message' => 'Servicio actualizado exitosamente',
-            'producto' => $servicio,
+            'servicio' => $servicio,
         ]);
     }
     public function storeServicio(Request $request)
@@ -83,19 +86,38 @@ class ServiciosController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:255',
-            'codigo' => 'required|string|max:255|unique:productos,codigo',
+            'codigo' => 'required|string|max:255|unique:servicios,codigo',
             'precio' => 'nullable|integer|min:0',
             'stock' => 'nullable|integer|min:0',
             'stock_minimo' => 'nullable|integer|min:0',
             'fecha_vencimiento' => 'nullable|date',
             'categoria_id' => 'nullable|exists:categorias,id',
         ]);
-
+        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
         $servicio = Servicio::create($validatedData);
 
         return response()->json([
             'message' => 'Servicio creado exitosamente',
-            'producto' => $servicio,
+            'servicios' => $servicio,
         ]);
+    }
+
+    public function disableServ($id)
+    {
+        $user = Servicio::findOrFail($id);
+        $user->estado_general_id = 2; 
+        $user->save();
+    
+        return response()->json(['message' => 'Servicio deshabilitado correctamente.']);
+        
+    }
+    public function enableServ($id)
+    {
+        $user = Servicio::findOrFail($id);
+        $user->estado_general_id = 1; 
+        $user->save();
+    
+        return response()->json(['message' => 'Servicio habilitado correctamente.']);
+        
     }
 }

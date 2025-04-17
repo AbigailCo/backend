@@ -14,7 +14,9 @@ class TestUserSeeder extends Seeder
     //les otorga un rol de cliente en el controlador
     public function run(): void
     {
-        $role = Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'cliente']);
+        Role::firstOrCreate(['name' => 'proveedor']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
         $estadoActivo = EstadoGeneral::where('value', 'act')->first();
         
         $user = User::updateOrCreate(
@@ -26,6 +28,6 @@ class TestUserSeeder extends Seeder
                 'estado_general_id' => $estadoActivo->id,
             ]
         );
-        $user->assignRole($role);
+        $user->assignRole($admin);
     }
 }
