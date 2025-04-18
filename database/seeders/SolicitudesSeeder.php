@@ -19,7 +19,7 @@ class SolicitudesSeeder extends Seeder
             ['id' => 1],
             [
                 'cliente_id' => '1',
-                'proveedor_id' => '2',
+                'proveedor_id' => '3',
                 'producto_id' => '1',
                 'mensaje_opcional' => 'creado con el seeder',
                 'estado_general_id' => $estadoActivo->id,
@@ -32,7 +32,7 @@ class SolicitudesSeeder extends Seeder
             ['id' => 2],
             [
                 'cliente_id' => '1',
-                'proveedor_id' => '2',
+                'proveedor_id' => '3',
                 'servicio_id' => '1',
                 'mensaje_opcional' => 'creado con el seeder',
                 'estado_general_id' => $estadoActivo->id,

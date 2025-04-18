@@ -28,4 +28,31 @@ class SolicitudesController extends Controller
             'solicitud' => $solicitud,
         ]);
     }
+
+    public function aprobarSoli($id)
+    {
+        $solicitud = Solicitud::findOrFail($id);
+        $solicitud->estado_general_id = 5; 
+        $solicitud->save();
+    
+        return response()->json(['message' => 'Solicitud aprobada.']);
+        
+    }
+    public function rechazarSoli($id)
+    {
+        $solicitud = Solicitud::findOrFail($id);
+        $solicitud->estado_general_id = 6; 
+        $solicitud->save();
+    
+        return response()->json(['message' => 'Solicitud rechazada.']);
+        
+    }
+    public function getSolicitud($id)
+    {
+        $solicitud = Solicitud::findOrFail($id);
+        return response()->json([
+            'solicitud' => $solicitud,
+        ]);
+    }
 }
+

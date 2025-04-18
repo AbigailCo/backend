@@ -93,6 +93,7 @@ class ProveedoresController extends Controller
                 'mensaje_opcional' => $solicitud->mensaje_opcional,
                 'fecha_solicitud' => $solicitud->fecha_solicitud,
                 'fecha_respuesta' => $solicitud->fecha_respuesta,
+                'estado_general_id' => $solicitud->estado_general_id,
             ];
         });
 
