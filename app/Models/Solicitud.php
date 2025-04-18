@@ -13,6 +13,7 @@ class Solicitud extends Model
     protected $fillable = [
        'cliente_id',
        'producto_id',
+       'servicio_id',
        'proveedor_id',
     ];
     public function estadoGeneral()
