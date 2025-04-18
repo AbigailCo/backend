@@ -22,6 +22,7 @@ class ProductosController extends Controller
                 'stock_minimo' => $producto->stock_minimo,
                 'fecha_vencimiento' => $producto->fecha_vencimiento,
                 'estado_general_id' => $producto->estado_general_id,
+                'proveedor_id' => $producto->proveedor_id->id,
                 'categoria_id' => $producto->categoria_id,
                 'categoria' => $producto->categoria ? [
                     'id' => $producto->categoria->id,
@@ -37,7 +38,7 @@ class ProductosController extends Controller
 
     public function getProductosHabi()
     {
-        $productos = Producto::with('categoria')->where('estado_general_id', 1)->get()->map(function ($producto) {
+        $productos = Producto::with('categoria', 'proveedor')->where('estado_general_id', 1)->get()->map(function ($producto) {
             return [
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
@@ -48,6 +49,11 @@ class ProductosController extends Controller
                 'stock_minimo' => $producto->stock_minimo,
                 'fecha_vencimiento' => $producto->fecha_vencimiento,
                 'estado_general_id' => $producto->estado_general_id,
+                'proveedor_id' => $producto->proveedor_id,
+                'proveedor' => $producto->proveedor ? [
+                    'id' => $producto->proveedor->id,
+                    'nombre' => $producto->proveedor->name,
+                ] : null,
                 'categoria_id' => $producto->categoria_id,
                 'categoria' => $producto->categoria ? [
                     'id' => $producto->categoria->id,
@@ -75,6 +81,8 @@ class ProductosController extends Controller
             'fecha_vencimiento' => $producto->fecha_vencimiento,
             'estado_general_id' => $producto->estado_general_id,
             'categoria_id' => $producto->categoria_id,
+            'proveedor_id' => $producto->proveedor_id->id,
+            
             // 'categoria' => $producto->categoria ? [
             //     'id' => $producto->categoria->id,
             //     'nombre' => $producto->categoria->nombre,

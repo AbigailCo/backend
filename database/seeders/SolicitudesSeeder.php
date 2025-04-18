@@ -14,7 +14,7 @@ class SolicitudesSeeder extends Seeder
      */
     public function run(): void
     {
-        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
+        $estadoActivo = EstadoGeneral::where('value', 'pend')->first();
         Solicitud::firstOrCreate(
             ['id' => 1],
             [

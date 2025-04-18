@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('servicio_id')->nullable()->constrained('servicios')->onDelete('cascade');
             $table->text('mensaje_opcional')->nullable();
             $table->foreignId('estado_general_id')->default(4)->constrained('estados_generales');
-            $table->string('fecha_solicitud')->useCurrent();
+            $table->string('fecha_solicitud')->nullable();
             $table->string('fecha_respuesta')->nullable();
             $table->timestamps();
         });

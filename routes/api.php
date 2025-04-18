@@ -7,13 +7,11 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\ServiciosController;
+use App\Http\Controllers\SolicitudesController;
 use App\Http\Controllers\UserController;
-use App\Models\Servicio;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
 
 
@@ -86,3 +84,7 @@ Route::post('/servicio/{id}/habilitar', [ServiciosController::class, 'enableServ
 //Proveedores
 Route::get('/my-productos/{id}', [ProveedoresController::class, 'myProductos']);
 Route::get('/my-servicios/{id}', [ProveedoresController::class, 'myServicios']);
+Route::get('/my-solicitudes/{id}', [ProveedoresController::class, 'mySolicitudes']);
+
+//Clientes
+Route::post('/create-solicitud', [SolicitudesController::class, 'storeSolicitud']);

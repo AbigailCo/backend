@@ -84,7 +84,7 @@ class ServiciosController extends Controller
 
     public function getServiciosHabi()
     {
-        $servicios = Servicio::with('categoria')->where('estado_general_id', 1)->get()->map(function ($servicio) {
+        $servicios = Servicio::with('categoria', 'proveedor')->where('estado_general_id', 1)->get()->map(function ($servicio) {
             return [
                 'id' => $servicio->id,
                 'nombre' => $servicio->nombre,
@@ -95,6 +95,11 @@ class ServiciosController extends Controller
                 'stock_minimo' => $servicio->stock_minimo,
                 'fecha_vencimiento' => $servicio->fecha_vencimiento,
                 'estado_general_id' => $servicio->estado_general_id,
+                'proveedor_id' => $servicio->proveedor_id,
+                'proveedor' => $servicio->proveedor ? [
+                    'id' => $servicio->proveedor->id,
+                    'nombre' => $servicio->proveedor->name,
+                ] : null,
                 'categoria_id' => $servicio->categoria_id,
                 'categoria' => $servicio->categoria ? [
                     'id' => $servicio->categoria->id,

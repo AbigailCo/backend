@@ -27,6 +27,8 @@ class ProductosSeeder extends Seeder
                 'stock_minimo' => 10,
                 'fecha_vencimiento' => '2024-12-31',
                 'categoria_id' => 1
+                'proveedor_id' => 2,
+
             ]
         );
     }

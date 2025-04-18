@@ -7,17 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Solicitud extends Model
 {
-    protected $table = 'solicitudes';
     use HasFactory;
+    protected $table = 'solicitudes';
 
     protected $fillable = [
-        'cliente_id',
-        'proveedor_id',
-        'producto_id',
-        'servicio_id',
-        'mensaje_opcional',
-        'fecha_solicitud',
-        'fecha_respuesta',
+       'cliente_id',
+       'producto_id',
+       'proveedor_id',
     ];
     public function estadoGeneral()
     {
@@ -36,10 +32,10 @@ class Solicitud extends Model
 
     public function producto()
     {
-        return $this->belongsTo(Producto::class, 'producto_id');
+        return $this->belongsTo(Producto::class);
     }
     public function servicio()
     {
-        return $this->belongsTo(Servicio::class, 'servicio_id');
+        return $this->belongsTo(Servicio::class);
     }
 }
