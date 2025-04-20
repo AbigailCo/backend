@@ -10,6 +10,61 @@ use Illuminate\Http\Request;
 
 class SolicitudesController extends Controller
 {
+    public function filtroSoli(Request $request)
+    {
+        $query = Solicitud::query();
+        $filtros = $request->all();
+        if ($request->has('proveedor_id')) {
+            $query->where('proveedor_id', $request->input('proveedor_id'));
+        }
+        
+        foreach ($filtros as $campo => $valor) {
+            switch ($campo) {
+                case 'nombre':
+                  
+                    $query->whereHas('producto', fn($q) => $q->where('nombre', 'like', "%$valor%"))
+                          ->orWhereHas('servicio', fn($q) => $q->where('nombre', 'like', "%$valor%"));
+                    break;
+                case 'codigo':
+                    $query->where(function ($q) use ($valor) {
+                        $q->whereHas('producto', fn($sub) => $sub->where('codigo', 'like', "%$valor%"))
+                          ->orWhereHas('servicio', fn($sub) => $sub->where('codigo', 'like', "%$valor%"));
+                    });
+                    break;
+    
+                case 'stock_minimo':
+                    $query->where(function ($q) use ($valor) {
+                        $q->whereHas('producto', fn($sub) => $sub->where('stock_minimo', $valor))
+                          ->orWhereHas('servicio', fn($sub) => $sub->where('stock_minimo', $valor));
+                    });
+                    break;
+    
+                case 'cliente':
+                    $query->whereHas('cliente', fn($q) => $q->where('nombre', 'like', "%$valor%"));
+                    break;
+    
+                case 'estado_general':
+                    $query->where('estado_general', 'like', "%$valor%");
+                    break;
+    
+                case 'fecha_vencimiento':
+                    $query->whereDate('fecha_vencimiento', $valor);
+                    break;
+    
+                case 'producto_id':
+                    $query->where('producto_id', $valor);
+                    break;
+    
+                case 'servicio_id':
+                    $query->where('servicio_id', $valor);
+                    break;
+            }
+        }
+    
+        $resultados = $query->with(['cliente', 'producto', 'servicio', 'proveedor', 'estadoGeneral'])->get();
+    
+        return response()->json($resultados);
+    }
     public function storeSolicitud(Request $request)
     {
         $validatedData = $request->validate([
@@ -67,7 +122,17 @@ class SolicitudesController extends Controller
                 'stock' => $solcitud->producto->stock,
                 'precio' => $solcitud->Producto->precio,
             ] : null,
-           'estado' =>  $solcitud->estadoGeneral->nombre,
+            'servicio' => $solcitud->servicio ? [
+                'nombre' =>  $solcitud->servicio->nombre,
+                'codigo' => $solcitud->servicio->codigo,
+                'stock' => $solcitud->servicio->stock,
+                'precio' => $solcitud->servicio->precio,
+            ] : null,
+            'estado' => $solcitud->estadoGeneral ? [
+                'id' =>  $solcitud->estadoGeneral->id,
+                'nombre' => $solcitud->estadoGeneral->nombre
+            ] : null,
+
 
         ];
     }
