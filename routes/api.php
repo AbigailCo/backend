@@ -89,6 +89,7 @@ Route::get('/my-solicitudes/{id}', [ProveedoresController::class, 'mySolicitudes
 //Clientes
 Route::post('/create-solicitud', [SolicitudesController::class, 'storeSolicitud']);
 
+Route::get('/solicitud/{id}', [SolicitudesController::class, 'getSolicitud']);
 
 Route::post('/solicitud/{id}/rechazar', [SolicitudesController::class, 'rechazarSoli']);
 Route::post('/solicitud/{id}/aprobar', [SolicitudesController::class, 'aprobarSoli']);

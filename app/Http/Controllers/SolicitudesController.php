@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\EstadoGeneral;
+use App\Models\Producto;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
 
@@ -32,27 +33,41 @@ class SolicitudesController extends Controller
     public function aprobarSoli($id)
     {
         $solicitud = Solicitud::findOrFail($id);
-        $solicitud->estado_general_id = 5; 
+        $solicitud->estado_general_id = 5;
         $solicitud->save();
-    
+
         return response()->json(['message' => 'Solicitud aprobada.']);
-        
     }
     public function rechazarSoli($id)
     {
         $solicitud = Solicitud::findOrFail($id);
-        $solicitud->estado_general_id = 6; 
+        $solicitud->estado_general_id = 6;
         $solicitud->save();
-    
+
         return response()->json(['message' => 'Solicitud rechazada.']);
-        
     }
     public function getSolicitud($id)
     {
-        $solicitud = Solicitud::findOrFail($id);
-        return response()->json([
-            'solicitud' => $solicitud,
-        ]);
+        $solcitud = Solicitud::findOrFail($id);
+        return [
+            'id' => $solcitud->id,
+            'cliente' => $solcitud->cliente ? [
+                'nombre' =>  $solcitud->cliente->name,
+                'contacto' => $solcitud->cliente->email
+            ] : null,
+
+            'proveedor' => $solcitud->proveedor ? [
+                'nombre' =>  $solcitud->proveedor->name,
+                'contacto' => $solcitud->proveedor->email
+            ] : null,
+
+            'producto' => $solcitud->producto ? [
+                'nombre' =>  $solcitud->producto->nombre,
+                'codigo' => $solcitud->producto->codigo,
+                'stock' => $solcitud->producto->stock,
+                'precio' => $solcitud->Producto->precio,
+            ] : null,
+
+        ];
     }
 }
-
