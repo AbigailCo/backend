@@ -67,6 +67,7 @@ class SolicitudesController extends Controller
                 'stock' => $solcitud->producto->stock,
                 'precio' => $solcitud->Producto->precio,
             ] : null,
+           'estado' =>  $solcitud->estadoGeneral->nombre,
 
         ];
     }

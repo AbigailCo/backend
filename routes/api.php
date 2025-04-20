@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\EstadosGeneralesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ProveedoresController;
@@ -85,11 +86,12 @@ Route::post('/servicio/{id}/habilitar', [ServiciosController::class, 'enableServ
 Route::get('/my-productos/{id}', [ProveedoresController::class, 'myProductos']);
 Route::get('/my-servicios/{id}', [ProveedoresController::class, 'myServicios']);
 Route::get('/my-solicitudes/{id}', [ProveedoresController::class, 'mySolicitudes']);
+Route::post('/solicitud/{id}/rechazar', [SolicitudesController::class, 'rechazarSoli']);
+Route::post('/solicitud/{id}/aprobar', [SolicitudesController::class, 'aprobarSoli']);
 
 //Clientes
 Route::post('/create-solicitud', [SolicitudesController::class, 'storeSolicitud']);
+Route::get('/my-solicitudes-cliente/{id}', [ClientesController::class, 'mySolicitudesCliente']);
 
+//Solicitudes
 Route::get('/solicitud/{id}', [SolicitudesController::class, 'getSolicitud']);
-
-Route::post('/solicitud/{id}/rechazar', [SolicitudesController::class, 'rechazarSoli']);
-Route::post('/solicitud/{id}/aprobar', [SolicitudesController::class, 'aprobarSoli']);
