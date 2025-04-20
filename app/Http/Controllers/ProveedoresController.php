@@ -90,6 +90,10 @@ class ProveedoresController extends Controller
                     'precio' => $solicitud->servicio->precio,
                     'stock' => $solicitud->servicio->stock,
                 ] : null,
+                'estado' => $solicitud->estadoGeneral ? [
+                    'nombre' => $solicitud->estadoGeneral->nombre,
+                    'id' => $solicitud->estadoGeneral->id
+                ] : null,
                 'mensaje_opcional' => $solicitud->mensaje_opcional,
                 'fecha_solicitud' => $solicitud->fecha_solicitud,
                 'fecha_respuesta' => $solicitud->fecha_respuesta,
