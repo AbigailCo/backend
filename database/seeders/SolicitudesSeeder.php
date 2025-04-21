@@ -18,7 +18,7 @@ class SolicitudesSeeder extends Seeder
         Solicitud::firstOrCreate(
             ['id' => 1],
             [
-                'cliente_id' => '1',
+                'cliente_id' => '2',
                 'proveedor_id' => '3',
                 'producto_id' => '1',
                 'mensaje_opcional' => 'creado con el seeder',
@@ -31,7 +31,7 @@ class SolicitudesSeeder extends Seeder
         Solicitud::firstOrCreate(
             ['id' => 2],
             [
-                'cliente_id' => '1',
+                'cliente_id' => '2',
                 'proveedor_id' => '3',
                 'servicio_id' => '1',
                 'mensaje_opcional' => 'creado con el seeder',

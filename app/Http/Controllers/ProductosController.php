@@ -40,27 +40,29 @@ class ProductosController extends Controller
     {
         $productos = Producto::with('categoria', 'proveedor')->where('estado_general_id', 1)->get()->map(function ($producto) {
             return [
-                'id' => $producto->id,
-                'nombre' => $producto->nombre,
-                'descripcion' => $producto->descripcion,
-                'codigo' => $producto->codigo,
-                'precio' => $producto->precio,
-                'stock' => $producto->stock,
-                'stock_minimo' => $producto->stock_minimo,
-                'fecha_vencimiento' => $producto->fecha_vencimiento,
-                'estado_general_id' => $producto->estado_general_id,
-                'proveedor_id' => $producto->proveedor_id,
-                'proveedor' => $producto->proveedor ? [
-                    'id' => $producto->proveedor->id,
-                    'nombre' => $producto->proveedor->name,
+               'producto' => $producto ? [
+                    'id' => $producto->id,
+                    'nombre' => $producto->nombre,
+                    'codigo' => $producto->codigo,
+                    'stock' => $producto->stock,
+                    'stock_minimo' => $producto->stock_minimo,
+                    'precio' => $producto->precio,
+                    'descripcion' => $producto->descripcion,
                 ] : null,
-                'categoria_id' => $producto->categoria_id,
+
+                'proveedor' => $producto->proveedor ? [
+                    'nombre' => $producto->proveedor->name,
+                    'contacto' => $producto->proveedor->email,
+                ] : null,
                 'categoria' => $producto->categoria ? [
-                    'id' => $producto->categoria->id,
                     'nombre' => $producto->categoria->nombre,
-                    'label' => $producto->categoria->label,
-                    'value' => $producto->categoria->value,
                     'descripcion' => $producto->categoria->descripcion,
+                ] : null,
+
+
+                'estado' => $producto->estado ? [
+                    'id' => $producto->estado->id,
+                    'nombre' => $producto->estado->nombre,
                 ] : null,
             ];
         });
@@ -82,7 +84,7 @@ class ProductosController extends Controller
             'estado_general_id' => $producto->estado_general_id,
             'categoria_id' => $producto->categoria_id,
             'proveedor_id' => $producto->proveedor_id->id,
-            
+
             // 'categoria' => $producto->categoria ? [
             //     'id' => $producto->categoria->id,
             //     'nombre' => $producto->categoria->nombre,
@@ -117,20 +119,18 @@ class ProductosController extends Controller
     public function disableProd($id)
     {
         $user = Producto::findOrFail($id);
-        $user->estado_general_id = 2; 
+        $user->estado_general_id = 2;
         $user->save();
-    
+
         return response()->json(['message' => 'Producto deshabilitado correctamente.']);
-        
     }
     public function enableProd($id)
     {
         $user = Producto::findOrFail($id);
-        $user->estado_general_id = 1; 
+        $user->estado_general_id = 1;
         $user->save();
-    
+
         return response()->json(['message' => 'Producto habilitado correctamente.']);
-        
     }
 
     public function editProducto(Request $request, $id)
@@ -154,5 +154,73 @@ class ProductosController extends Controller
             'message' => 'Producto actualizado exitosamente',
             'producto' => $producto,
         ]);
+    }
+
+    public function filtroProdu(Request $request)
+    {
+        $query = Producto::query();
+        $filtros = $request->all();
+
+
+        foreach ($filtros as $campo => $valor) {
+            switch ($campo) {
+                case 'nombre':
+                    $query->where('nombre', 'like', "%$valor%");
+                    break;
+                
+                case 'codigo':
+                    $query->where('codigo', 'like', "%$valor%");
+                    break;
+                
+                case 'stock_minimo':
+                    $query->where('stock_minimo', $valor);
+                    break;
+                case 'estado_general':
+                    $query->where('estado_general_id', 'like', "%$valor%");
+                    break;
+
+                case 'fecha_vencimiento':
+                    $query->whereDate('fecha_vencimiento', $valor);
+                    break;
+
+                case 'producto_id':
+                    $query->where('id', $valor);
+                    break;
+
+            }
+        }
+
+        $resultados = $query->with(['proveedor', 'estado', 'categoria'])->get();
+
+        $datosFiltrados = $resultados->map(function ($producto) {
+            return [
+                'producto' => $producto ? [
+                    'id' => $producto->id,
+                    'nombre' => $producto->nombre,
+                    'codigo' => $producto->codigo,
+                    'stock' => $producto->stock,
+                    'stock_minimo' => $producto->stock_minimo,
+                    'precio' => $producto->precio,
+                    'descripcion' => $producto->descripcion,
+                ] : null,
+
+                'proveedor' => $producto->proveedor ? [
+                    'nombre' => $producto->proveedor->name,
+                    'contacto' => $producto->proveedor->email,
+                ] : null,
+                'categoria' => $producto->categoria ? [
+                    'nombre' => $producto->categoria->nombre,
+                    'descripcion' => $producto->categoria->descripcion,
+                ] : null,
+
+
+                'estado' => $producto->estado ? [
+                    'id' => $producto->estado->id,
+                    'nombre' => $producto->estado->nombre,
+                ] : null,
+            ];
+        });
+
+        return response()->json($datosFiltrados);
     }
 }

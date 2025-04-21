@@ -20,7 +20,7 @@ class TestUserSeeder extends Seeder
         $estadoActivo = EstadoGeneral::where('value', 'act')->first();
         
         $user1 = User::updateOrCreate(
-            ['email' => 'prueba@mail.com'],
+            ['email' => 'prueba@gmail.com'],
             [
                 'id' => 1,
                 'name' => 'prueba',
