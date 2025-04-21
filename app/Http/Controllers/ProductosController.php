@@ -38,7 +38,7 @@ class ProductosController extends Controller
 
     public function getProductosHabi()
     {
-        $productos = Producto::with('categoria', 'proveedor')->where('estado_general_id', 1)->get()->map(function ($producto) {
+        $productos = Producto::with('categoria', 'proveedor', 'estado')->where('estado_general_id', 1)->get()->map(function ($producto) {
             return [
                'producto' => $producto ? [
                     'id' => $producto->id,

@@ -84,29 +84,31 @@ class ServiciosController extends Controller
 
     public function getServiciosHabi()
     {
-        $servicios = Servicio::with('categoria', 'proveedor')->where('estado_general_id', 1)->get()->map(function ($servicio) {
+        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->where('estado_general_id', 1)->get()->map(function ($servicio) {
             return [
-                'id' => $servicio->id,
-                'nombre' => $servicio->nombre,
-                'descripcion' => $servicio->descripcion,
-                'codigo' => $servicio->codigo,
-                'precio' => $servicio->precio,
-                'stock' => $servicio->stock,
-                'stock_minimo' => $servicio->stock_minimo,
-                'fecha_vencimiento' => $servicio->fecha_vencimiento,
-                'estado_general_id' => $servicio->estado_general_id,
-                'proveedor_id' => $servicio->proveedor_id,
-                'proveedor' => $servicio->proveedor ? [
-                    'id' => $servicio->proveedor->id,
-                    'nombre' => $servicio->proveedor->name,
+                'servicio' => $servicio ? [
+                    'id' => $servicio->id,
+                    'nombre' => $servicio->nombre,
+                    'codigo' => $servicio->codigo,
+                    'stock' => $servicio->stock,
+                    'stock_minimo' => $servicio->stock_minimo,
+                    'precio' => $servicio->precio,
+                    'descripcion' => $servicio->descripcion,
                 ] : null,
-                'categoria_id' => $servicio->categoria_id,
+
+                'proveedor' => $servicio->proveedor ? [
+                    'nombre' => $servicio->proveedor->name,
+                    'contacto' => $servicio->proveedor->email,
+                ] : null,
                 'categoria' => $servicio->categoria ? [
-                    'id' => $servicio->categoria->id,
                     'nombre' => $servicio->categoria->nombre,
-                    'label' => $servicio->categoria->label,
-                    'value' => $servicio->categoria->value,
                     'descripcion' => $servicio->categoria->descripcion,
+                ] : null,
+
+
+                'estado' => $servicio->estadoGeneral ? [
+                    'id' => $servicio->estadoGeneral->id,
+                    'nombre' => $servicio->estadoGeneral->nombre,
                 ] : null,
             ];
         });
@@ -150,5 +152,72 @@ class ServiciosController extends Controller
     
         return response()->json(['message' => 'Servicio habilitado correctamente.']);
         
+    }
+    public function filtroServi(Request $request)
+    {
+        $query = Servicio::query();
+        $filtros = $request->all();
+
+
+        foreach ($filtros as $campo => $valor) {
+            switch ($campo) {
+                case 'nombre':
+                    $query->where('nombre', 'like', "%$valor%");
+                    break;
+                
+                case 'codigo':
+                    $query->where('codigo', 'like', "%$valor%");
+                    break;
+                
+                case 'stock_minimo':
+                    $query->where('stock_minimo', $valor);
+                    break;
+                case 'estado_general':
+                    $query->where('estado_general_id', 'like', "%$valor%");
+                    break;
+
+                case 'fecha_vencimiento':
+                    $query->whereDate('fecha_vencimiento', $valor);
+                    break;
+
+                case 'servicio_id':
+                    $query->where('id', $valor);
+                    break;
+
+            }
+        }
+
+        $resultados = $query->with(['proveedor', 'estadoGeneral', 'categoria'])->get();
+
+        $datosFiltrados = $resultados->map(function ($servicio) {
+            return [
+                'servicio' => $servicio ? [
+                    'id' => $servicio->id,
+                    'nombre' => $servicio->nombre,
+                    'codigo' => $servicio->codigo,
+                    'stock' => $servicio->stock,
+                    'stock_minimo' => $servicio->stock_minimo,
+                    'precio' => $servicio->precio,
+                    'descripcion' => $servicio->descripcion,
+                ] : null,
+
+                'proveedor' => $servicio->proveedor ? [
+                    'nombre' => $servicio->proveedor->name,
+                    'contacto' => $servicio->proveedor->email,
+                ] : null,
+                'categoria' => $servicio->categoria ? [
+                    'nombre' => $servicio->categoria->nombre,
+                    'descripcion' => $servicio->categoria->descripcion,
+                ] : null,
+
+
+                'estado' => $servicio->estadoGeneral ? [
+                    'id' => $servicio->estadoGeneral->id,
+                    'nombre' => $servicio->estadoGeneral->nombre,
+                ] : null,
+            ];
+        });
+
+        return response()->json($datosFiltrados);
     }
 }

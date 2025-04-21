@@ -47,22 +47,29 @@ class ProveedoresController extends Controller
         
         $servicios = Servicio::with('categoria')->where('proveedor_id', $id)->get()->map(function ($servicio) {
             return [
-                'id' => $servicio->id,
-                'nombre' => $servicio->nombre,
-                'descripcion' => $servicio->descripcion,
-                'codigo' => $servicio->codigo,
-                'precio' => $servicio->precio,
-                'stock' => $servicio->stock,
-                'stock_minimo' => $servicio->stock_minimo,
-                'fecha_vencimiento' => $servicio->fecha_vencimiento,
-                'estado_general_id' => $servicio->estado_general_id,
-                'categoria_id' => $servicio->categoria_id,
+                'servicio' => $servicio ? [
+                    'id' => $servicio->id,
+                    'nombre' => $servicio->nombre,
+                    'codigo' => $servicio->codigo,
+                    'stock' => $servicio->stock,
+                    'stock_minimo' => $servicio->stock_minimo,
+                    'precio' => $servicio->precio,
+                    'descripcion' => $servicio->descripcion,
+                ] : null,
+
+                'proveedor' => $servicio->proveedor ? [
+                    'nombre' => $servicio->proveedor->name,
+                    'contacto' => $servicio->proveedor->email,
+                ] : null,
                 'categoria' => $servicio->categoria ? [
-                    'id' => $servicio->categoria->id,
                     'nombre' => $servicio->categoria->nombre,
-                    'label' => $servicio->categoria->label,
-                    'value' => $servicio->categoria->value,
                     'descripcion' => $servicio->categoria->descripcion,
+                ] : null,
+
+
+                'estado' => $servicio->estadoGeneral ? [
+                    'id' => $servicio->estadoGeneral->id,
+                    'nombre' => $servicio->estadoGeneral->nombre,
                 ] : null,
             ];
         });

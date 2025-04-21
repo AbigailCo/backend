@@ -82,6 +82,7 @@ Route::get('/servicio/{id}', [ServiciosController::class, 'getServicio']);
 Route::post('/servicio/{id}/edit', [ServiciosController::class, 'editServicio']);
 Route::post('/servicio/{id}/deshabilitar', [ServiciosController::class, 'disableServ']);
 Route::post('/servicio/{id}/habilitar', [ServiciosController::class, 'enableServ']);
+Route::post('/servicios-filtro', [ServiciosController::class, 'filtroServi']);
 
 //Proveedores
 Route::get('/my-productos/{id}', [ProveedoresController::class, 'myProductos']);
