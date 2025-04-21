@@ -14,56 +14,91 @@ class SolicitudesController extends Controller
     {
         $query = Solicitud::query();
         $filtros = $request->all();
-        if ($request->has('proveedor_id')) {
+        if ($request->filled('proveedor_id')) {
             $query->where('proveedor_id', $request->input('proveedor_id'));
+        } elseif ($request->filled('cliente_id')) {
+            $query->where('cliente_id', $request->input('cliente_id'));
         }
-        
+
         foreach ($filtros as $campo => $valor) {
+            if (in_array($campo, ['proveedor_id', 'cliente_id'])) {
+                continue;
+            }
             switch ($campo) {
                 case 'nombre':
-                  
+
                     $query->whereHas('producto', fn($q) => $q->where('nombre', 'like', "%$valor%"))
-                          ->orWhereHas('servicio', fn($q) => $q->where('nombre', 'like', "%$valor%"));
+                        ->orWhereHas('servicio', fn($q) => $q->where('nombre', 'like', "%$valor%"));
                     break;
                 case 'codigo':
                     $query->where(function ($q) use ($valor) {
                         $q->whereHas('producto', fn($sub) => $sub->where('codigo', 'like', "%$valor%"))
-                          ->orWhereHas('servicio', fn($sub) => $sub->where('codigo', 'like', "%$valor%"));
+                            ->orWhereHas('servicio', fn($sub) => $sub->where('codigo', 'like', "%$valor%"));
                     });
                     break;
-    
+
                 case 'stock_minimo':
                     $query->where(function ($q) use ($valor) {
                         $q->whereHas('producto', fn($sub) => $sub->where('stock_minimo', $valor))
-                          ->orWhereHas('servicio', fn($sub) => $sub->where('stock_minimo', $valor));
+                            ->orWhereHas('servicio', fn($sub) => $sub->where('stock_minimo', $valor));
                     });
                     break;
-    
+
                 case 'cliente':
                     $query->whereHas('cliente', fn($q) => $q->where('nombre', 'like', "%$valor%"));
                     break;
-    
+
                 case 'estado_general':
                     $query->where('estado_general', 'like', "%$valor%");
                     break;
-    
+
                 case 'fecha_vencimiento':
                     $query->whereDate('fecha_vencimiento', $valor);
                     break;
-    
-                case 'producto_id':
-                    $query->where('producto_id', $valor);
-                    break;
-    
-                case 'servicio_id':
-                    $query->where('servicio_id', $valor);
-                    break;
+
+                    case 'producto_id':
+                        $query->where('producto_id', $valor);
+                        break;
+        
+                    case 'servicio_id':
+                        $query->where('servicio_id', $valor);
+                        break;
             }
         }
-    
+
         $resultados = $query->with(['cliente', 'producto', 'servicio', 'proveedor', 'estadoGeneral'])->get();
-    
-        return response()->json($resultados);
+
+        $datosFiltrados = $resultados->map(function ($solicitud) {
+            return [
+                'id' => $solicitud->id,
+                'cliente' => $solicitud->cliente ? [
+                    'nombre' => $solicitud->cliente->name,
+                    'contacto' => $solicitud->cliente->email,
+                ] : null,
+                'proveedor' => $solicitud->proveedor ? [
+                    'nombre' => $solicitud->proveedor->name,
+                    'contacto' => $solicitud->proveedor->email,
+                ] : null,
+                'producto' => $solicitud->producto ? [
+                    'nombre' => $solicitud->producto->nombre,
+                    'codigo' => $solicitud->producto->codigo,
+                    'stock' => $solicitud->producto->stock,
+                    'precio' => $solicitud->producto->precio,
+                ] : null,
+                'servicio' => $solicitud->servicio ? [
+                    'nombre' => $solicitud->servicio->nombre,
+                    'codigo' => $solicitud->servicio->codigo,
+                    'stock' => $solicitud->servicio->stock,
+                    'precio' => $solicitud->servicio->precio,
+                ] : null,
+                'estado' => $solicitud->estadoGeneral ? [
+                    'id' => $solicitud->estadoGeneral->id,
+                    'nombre' => $solicitud->estadoGeneral->nombre,
+                ] : null,
+            ];
+        });
+
+        return response()->json($datosFiltrados);
     }
     public function storeSolicitud(Request $request)
     {
