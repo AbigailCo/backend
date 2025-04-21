@@ -11,24 +11,32 @@ class ServiciosController extends Controller
 {
     public function getServicios()
     {
-        $servicios = Servicio::with('categoria')->get()->map(function ($servicio) {
+        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->get()->map(function ($servicio) {
             return [
-                'id' => $servicio->id,
-                'nombre' => $servicio->nombre,
-                'descripcion' => $servicio->descripcion,
-                'codigo' => $servicio->codigo,
-                'precio' => $servicio->precio,
-                'stock' => $servicio->stock,
-                'stock_minimo' => $servicio->stock_minimo,
-                'fecha_vencimiento' => $servicio->fecha_vencimiento,
-                'categoria_id' => $servicio->categoria_id,
-                'estado_general_id' => $servicio->estado_general_id,
+                'servicio' => $servicio ? [
+                    'id' => $servicio->id,
+                    'nombre' => $servicio->nombre,
+                    'codigo' => $servicio->codigo,
+                    'stock' => $servicio->stock,
+                    'stock_minimo' => $servicio->stock_minimo,
+                    'precio' => $servicio->precio,
+                    'descripcion' => $servicio->descripcion,
+                ] : null,
+    
+                'proveedor' => $servicio->proveedor ? [
+                    'nombre' => $servicio->proveedor->name,
+                    'contacto' => $servicio->proveedor->email,
+                    'proveedor_id' => $servicio->proveedor->id,
+                ] : null,
                 'categoria' => $servicio->categoria ? [
-                    'id' => $servicio->categoria->id,
                     'nombre' => $servicio->categoria->nombre,
-                    'label' => $servicio->categoria->label,
-                    'value' => $servicio->categoria->value,
                     'descripcion' => $servicio->categoria->descripcion,
+                ] : null,
+    
+    
+                'estado' => $servicio->estadoGeneral ? [
+                    'id' => $servicio->estadoGeneral->id,
+                    'nombre' => $servicio->estadoGeneral->nombre,
                 ] : null,
             ];
         }); 
@@ -37,25 +45,34 @@ class ServiciosController extends Controller
 
     public function getServicio($id)
     {
-        $servicio = Servicio::findOrFail($id);   
+        $servicio = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->findOrFail($id);   
          return [
+            'servicio' => $servicio ? [
                 'id' => $servicio->id,
                 'nombre' => $servicio->nombre,
-                'descripcion' => $servicio->descripcion,
                 'codigo' => $servicio->codigo,
-                'precio' => $servicio->precio,
                 'stock' => $servicio->stock,
                 'stock_minimo' => $servicio->stock_minimo,
-                'fecha_vencimiento' => $servicio->fecha_vencimiento,
-                'estado_general_id' => $servicio->estado_general_id,
-                'categoria_id' => $servicio->categoria_id,
-                // 'categoria' => $servicio->categoria ? [
-                //     'id' => $servicio->categoria->id,
-                //     'nombre' => $servicio->categoria->nombre,
-                //     'label' => $servicio->categoria->label,
-                //     'value' => $servicio->categoria->value,
-                //     'descripcion' => $servicio->categoria->descripcion,
-                // ] : null,
+                'precio' => $servicio->precio,
+                'descripcion' => $servicio->descripcion,
+                'proveedor_id' => $servicio->proveedor_id,
+            ] : null,
+
+            'proveedor' => $servicio->proveedor ? [
+                'nombre' => $servicio->proveedor->name,
+                'contacto' => $servicio->proveedor->email,
+                'proveedor_id' => $servicio->proveedor->id,
+            ] : null,
+            'categoria' => $servicio->categoria ? [
+                'nombre' => $servicio->categoria->nombre,
+                'descripcion' => $servicio->categoria->descripcion,
+            ] : null,
+
+
+            'estado' => $servicio->estadoGeneral ? [
+                'id' => $servicio->estadoGeneral->id,
+                'nombre' => $servicio->estadoGeneral->nombre,
+            ] : null,
             ];
     }
 
@@ -94,11 +111,13 @@ class ServiciosController extends Controller
                     'stock_minimo' => $servicio->stock_minimo,
                     'precio' => $servicio->precio,
                     'descripcion' => $servicio->descripcion,
+                    'proveedor_id' => $servicio->proveedor_id,
                 ] : null,
 
                 'proveedor' => $servicio->proveedor ? [
                     'nombre' => $servicio->proveedor->name,
                     'contacto' => $servicio->proveedor->email,
+                    'proveedor_id' => $servicio->proveedor->id,
                 ] : null,
                 'categoria' => $servicio->categoria ? [
                     'nombre' => $servicio->categoria->nombre,
@@ -199,11 +218,13 @@ class ServiciosController extends Controller
                     'stock_minimo' => $servicio->stock_minimo,
                     'precio' => $servicio->precio,
                     'descripcion' => $servicio->descripcion,
+                    'proveedor_id' => $servicio->proveedor_id,
                 ] : null,
 
                 'proveedor' => $servicio->proveedor ? [
                     'nombre' => $servicio->proveedor->name,
                     'contacto' => $servicio->proveedor->email,
+                    'proveedor_id' => $servicio->proveedor->id,
                 ] : null,
                 'categoria' => $servicio->categoria ? [
                     'nombre' => $servicio->categoria->nombre,

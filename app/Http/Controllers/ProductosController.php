@@ -13,23 +13,31 @@ class ProductosController extends Controller
     {
         $productos = Producto::with('categoria')->get()->map(function ($producto) {
             return [
-                'id' => $producto->id,
-                'nombre' => $producto->nombre,
-                'descripcion' => $producto->descripcion,
-                'codigo' => $producto->codigo,
-                'precio' => $producto->precio,
-                'stock' => $producto->stock,
-                'stock_minimo' => $producto->stock_minimo,
-                'fecha_vencimiento' => $producto->fecha_vencimiento,
-                'estado_general_id' => $producto->estado_general_id,
-                'proveedor_id' => $producto->proveedor_id->id,
-                'categoria_id' => $producto->categoria_id,
+                'producto' => $producto ? [
+                    'id' => $producto->id,
+                    'nombre' => $producto->nombre,
+                    'codigo' => $producto->codigo,
+                    'stock' => $producto->stock,
+                    'stock_minimo' => $producto->stock_minimo,
+                    'precio' => $producto->precio,
+                    'descripcion' => $producto->descripcion,
+                    'proveedor_id' => $producto->proveedor_id,
+                ] : null,
+
+                'proveedor' => $producto->proveedor ? [
+                    'nombre' => $producto->proveedor->name,
+                    'contacto' => $producto->proveedor->email,
+                    'proveedor_id' => $producto->proveedor->id,
+                ] : null,
                 'categoria' => $producto->categoria ? [
-                    'id' => $producto->categoria->id,
                     'nombre' => $producto->categoria->nombre,
-                    'label' => $producto->categoria->label,
-                    'value' => $producto->categoria->value,
                     'descripcion' => $producto->categoria->descripcion,
+                ] : null,
+
+
+                'estado' => $producto->estado ? [
+                    'id' => $producto->estado->id,
+                    'nombre' => $producto->estado->nombre,
                 ] : null,
             ];
         });
@@ -48,11 +56,13 @@ class ProductosController extends Controller
                     'stock_minimo' => $producto->stock_minimo,
                     'precio' => $producto->precio,
                     'descripcion' => $producto->descripcion,
+                    'proveedor_id' => $producto->proveedor_id,
                 ] : null,
 
                 'proveedor' => $producto->proveedor ? [
                     'nombre' => $producto->proveedor->name,
                     'contacto' => $producto->proveedor->email,
+                    'proveedor_id' => $producto->proveedor->id,
                 ] : null,
                 'categoria' => $producto->categoria ? [
                     'nombre' => $producto->categoria->nombre,
@@ -73,25 +83,32 @@ class ProductosController extends Controller
     {
         $producto = Producto::findOrFail($id);
         return [
-            'id' => $producto->id,
-            'nombre' => $producto->nombre,
-            'descripcion' => $producto->descripcion,
-            'codigo' => $producto->codigo,
-            'precio' => $producto->precio,
-            'stock' => $producto->stock,
-            'stock_minimo' => $producto->stock_minimo,
-            'fecha_vencimiento' => $producto->fecha_vencimiento,
-            'estado_general_id' => $producto->estado_general_id,
-            'categoria_id' => $producto->categoria_id,
-            'proveedor_id' => $producto->proveedor_id->id,
+            'producto' => $producto ? [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'codigo' => $producto->codigo,
+                'stock' => $producto->stock,
+                'stock_minimo' => $producto->stock_minimo,
+                'precio' => $producto->precio,
+                'descripcion' => $producto->descripcion,
+                'proveedor_id' => $producto->proveedor_id,
+            ] : null,
 
-            // 'categoria' => $producto->categoria ? [
-            //     'id' => $producto->categoria->id,
-            //     'nombre' => $producto->categoria->nombre,
-            //     'label' => $producto->categoria->label,
-            //     'value' => $producto->categoria->value,
-            //     'descripcion' => $producto->categoria->descripcion,
-            // ] : null,
+            'proveedor' => $producto->proveedor ? [
+                'nombre' => $producto->proveedor->name,
+                'contacto' => $producto->proveedor->email,
+                'proveedor_id' => $producto->proveedor->id,
+            ] : null,
+            'categoria' => $producto->categoria ? [
+                'nombre' => $producto->categoria->nombre,
+                'descripcion' => $producto->categoria->descripcion,
+            ] : null,
+
+
+            'estado' => $producto->estado ? [
+                'id' => $producto->estado->id,
+                'nombre' => $producto->estado->nombre,
+            ] : null,
         ];
     }
 
@@ -202,11 +219,13 @@ class ProductosController extends Controller
                     'stock_minimo' => $producto->stock_minimo,
                     'precio' => $producto->precio,
                     'descripcion' => $producto->descripcion,
+                    'proveedor_id' => $producto->proveedor_id,
                 ] : null,
 
                 'proveedor' => $producto->proveedor ? [
                     'nombre' => $producto->proveedor->name,
                     'contacto' => $producto->proveedor->email,
+                    'proveedor_id' => $producto->proveedor->id,
                 ] : null,
                 'categoria' => $producto->categoria ? [
                     'nombre' => $producto->categoria->nombre,
