@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             CategoriasSeeder::class,
             ProductosSeeder::class,
             ServiciosSeeder::class,
-           SolicitudesSeeder::class
+           SolicitudesSeeder::class,
+           DisponibilidadSeeder::class,
+           ReservaSeeder::class,
         ]);
         /*User::factory()->create([
             'name' => 'Test User',

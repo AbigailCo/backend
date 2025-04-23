@@ -22,6 +22,7 @@ class ProductosController extends Controller
                     'precio' => $producto->precio,
                     'descripcion' => $producto->descripcion,
                     'proveedor_id' => $producto->proveedor_id,
+                    'fecha_vencimiento' => $producto->fecha_vencimiento
                 ] : null,
 
                 'proveedor' => $producto->proveedor ? [
@@ -57,6 +58,7 @@ class ProductosController extends Controller
                     'precio' => $producto->precio,
                     'descripcion' => $producto->descripcion,
                     'proveedor_id' => $producto->proveedor_id,
+                    'fecha_vencimiento' => $producto->fecha_vencimiento
                 ] : null,
 
                 'proveedor' => $producto->proveedor ? [

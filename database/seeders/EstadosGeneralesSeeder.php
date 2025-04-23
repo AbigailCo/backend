@@ -40,5 +40,9 @@ class EstadosGeneralesSeeder extends Seeder
             ['id' => 6],
             ['nombre' => 'Rechazada', 'label' => 'Rechazada', 'value' => 'recha', 'descripcion' => 'Solicitud rechazada']
         );
+        EstadoGeneral::firstOrCreate(
+            ['id' => 7],
+            ['nombre' => 'Cancelada', 'label' => 'Cancelada', 'value' => 'cancel', 'descripcion' => 'Solicitud cancelada']
+        );
     }
 }

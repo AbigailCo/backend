@@ -21,6 +21,7 @@ class ServiciosController extends Controller
                     'stock_minimo' => $servicio->stock_minimo,
                     'precio' => $servicio->precio,
                     'descripcion' => $servicio->descripcion,
+                    'fecha_vencimiento' => $servicio->fecha_vencimiento
                 ] : null,
     
                 'proveedor' => $servicio->proveedor ? [
@@ -112,6 +113,7 @@ class ServiciosController extends Controller
                     'precio' => $servicio->precio,
                     'descripcion' => $servicio->descripcion,
                     'proveedor_id' => $servicio->proveedor_id,
+                    'fecha_vencimiento' => $servicio->fecha_vencimiento
                 ] : null,
 
                 'proveedor' => $servicio->proveedor ? [
