@@ -56,13 +56,13 @@ class SolicitudesController extends Controller
                     $query->whereDate('fecha_vencimiento', $valor);
                     break;
 
-                    case 'producto_id':
-                        $query->where('producto_id', $valor);
-                        break;
-        
-                    case 'servicio_id':
-                        $query->where('servicio_id', $valor);
-                        break;
+                case 'producto_id':
+                    $query->where('producto_id', $valor);
+                    break;
+
+                case 'servicio_id':
+                    $query->where('servicio_id', $valor);
+                    break;
             }
         }
 
@@ -107,8 +107,10 @@ class SolicitudesController extends Controller
             'proveedor_id' => 'nullable|exists:users,id',
             'producto_id' => 'nullable|exists:productos,id',
             'servicio_id' => 'nullable|exists:servicios,id',
-            // 'fecha_solicitud' => 'nullable|date',
-            // 'fecha_respuesta' => 'nullable|date',
+            'categoria_id' => 'nullable|exists:categoria,id',
+            'fecha_reserva' => 'nullable|regex:/^\d{4}-\d{2}-\d{2}$/',
+            'hora_reserva'  => 'nullable|regex:/^\d{2}:\d{2}$/',
+            'notas'          => 'nullable|string|max:1000',
         ]);
         $estadoActivo = EstadoGeneral::where('value', 'pend')->first();
         $data['fecha_solicitud'] = now()->format('Y-m-d');

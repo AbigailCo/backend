@@ -40,5 +40,6 @@ class SolicitudesSeeder extends Seeder
                 'fecha_respuesta' =>'2024-12-31',               
             ]
         );
+        
     }
 }

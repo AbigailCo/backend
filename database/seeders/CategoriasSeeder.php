@@ -42,5 +42,34 @@ class CategoriasSeeder extends Seeder
                 'descripcion' => 'Tercera categoria'
             ]
         );
+        Categoria::firstOrCreate(
+            ['id' => 4],
+            [
+                'nombre' => 'Compra',
+                'label' => 'Compra',
+                'value' => 'com',
+                'descripcion' => 'Compra de producto'
+            ]
+        );
+
+        Categoria::firstOrCreate(
+            ['id' => 5],
+            [
+                'nombre' => 'Reserva',
+                'label' => 'Reserva',
+                'value' => 'reser',
+                'descripcion' => 'Reservar servicio'
+            ]
+        );
+
+        Categoria::firstOrCreate(
+            ['id' => 6],
+            [
+                'nombre' => 'Turno',
+                'label' => 'Turno',
+                'value' => 'tur',
+                'descripcion' => 'Turno medico'
+            ]
+        );
     }
 }

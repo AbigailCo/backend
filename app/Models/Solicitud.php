@@ -15,16 +15,25 @@ class Solicitud extends Model
        'producto_id',
        'servicio_id',
        'proveedor_id',
+       'categoria_id',
+       
     ];
     public function estadoGeneral()
     {
         return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
     }
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class, 'categoria_id');
+    }
     public function cliente()
     {
         return $this->belongsTo(User::class, 'cliente_id');
     }
-    
+    public function diasDisponibles()
+{
+    return $this->belongsToMany(DiaSemana::class, 'servicio_dia');
+}
 
     public function proveedor()
     {

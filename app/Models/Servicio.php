@@ -25,7 +25,10 @@ class Servicio extends Model
       {
           return $this->belongsTo(Categoria::class, 'categoria_id');
       }
-     
+      public function diasDisponibles()
+      {
+          return $this->belongsToMany(DiaSemana::class, 'servicio_dia');
+      }
       public function estadoGeneral()
       {
           return $this->belongsTo(EstadoGeneral::class, 'estado_general_id');
