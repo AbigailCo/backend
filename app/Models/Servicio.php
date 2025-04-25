@@ -11,14 +11,24 @@ class Servicio extends Model
       protected $table = 'servicios';
 
       protected $fillable = [
-          'nombre',
-          'descripcion',
-          'codigo',
-          'precio',
-          'stock',
-          'stock_minimo',
-          'fecha_vencimiento',
-          'categoria_id',
+        'nombre',
+        'descripcion',
+        'codigo',
+        'precio',
+        'stock',
+        'stock_minimo',
+        'fecha_vencimiento',
+        'categoria_id',
+        'tipo',
+        'duracion',
+        'ubicacion',
+        'proveedor_id',
+        'estado_general_id',
+        'horarios',
+      ];
+
+      protected $casts = [
+        'horarios' => 'array',
       ];
   
       public function categoria()

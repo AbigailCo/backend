@@ -23,7 +23,7 @@ class ServiciosController extends Controller
                     'descripcion' => $servicio->descripcion,
                     'fecha_vencimiento' => $servicio->fecha_vencimiento
                 ] : null,
-    
+
                 'proveedor' => $servicio->proveedor ? [
                     'nombre' => $servicio->proveedor->name,
                     'contacto' => $servicio->proveedor->email,
@@ -33,21 +33,21 @@ class ServiciosController extends Controller
                     'nombre' => $servicio->categoria->nombre,
                     'descripcion' => $servicio->categoria->descripcion,
                 ] : null,
-    
-    
+
+
                 'estado' => $servicio->estadoGeneral ? [
                     'id' => $servicio->estadoGeneral->id,
                     'nombre' => $servicio->estadoGeneral->nombre,
                 ] : null,
             ];
-        }); 
+        });
         return response()->json($servicios);
     }
 
     public function getServicio($id)
     {
-        $servicio = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->findOrFail($id);   
-         return [
+        $servicio = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->findOrFail($id);
+        return [
             'servicio' => $servicio ? [
                 'id' => $servicio->id,
                 'nombre' => $servicio->nombre,
@@ -74,7 +74,7 @@ class ServiciosController extends Controller
                 'id' => $servicio->estadoGeneral->id,
                 'nombre' => $servicio->estadoGeneral->nombre,
             ] : null,
-            ];
+        ];
     }
 
     public function editServicio(Request $request, $id)
@@ -138,6 +138,7 @@ class ServiciosController extends Controller
     public function storeServicio(Request $request)
     {
         $validatedData = $request->validate([
+            'proveedor_id' => 'nullable|exists:users,id',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:255',
             'codigo' => 'required|string|max:255|unique:servicios,codigo',
@@ -146,9 +147,26 @@ class ServiciosController extends Controller
             'stock_minimo' => 'nullable|integer|min:0',
             'fecha_vencimiento' => 'nullable|date',
             'categoria_id' => 'nullable|exists:categorias,id',
+            'tipo' => 'nullable|string|max:255',
+            'duracion' => 'nullable|string|max:100',
+            'ubicacion' => 'nullable|string|max:255',
+            'horarios' => 'nullable|array',
+            'horarios.*' => 'string|regex:/^\d{2}:\d{2}$/',
+            'dias_disponibles' => 'nullable|array',
+            'dias_disponibles.*' => 'integer|exists:dias_semana,id',
         ]);
         $estadoActivo = EstadoGeneral::where('value', 'act')->first();
-        $servicio = Servicio::create($validatedData);
+
+        $servicio = Servicio::create([
+            ...$validatedData,
+            'estado_general_id' => $estadoActivo->id,
+            'horarios' => json_encode($validatedData['horarios'] ?? []),
+        ]);
+        if (!empty($validatedData['dias_disponibles'])) {
+            $servicio->diasDisponibles()->sync($validatedData['dias_disponibles']);
+        }
+
+
 
         return response()->json([
             'message' => 'Servicio creado exitosamente',
@@ -159,20 +177,18 @@ class ServiciosController extends Controller
     public function disableServ($id)
     {
         $user = Servicio::findOrFail($id);
-        $user->estado_general_id = 2; 
+        $user->estado_general_id = 2;
         $user->save();
-    
+
         return response()->json(['message' => 'Servicio deshabilitado correctamente.']);
-        
     }
     public function enableServ($id)
     {
         $user = Servicio::findOrFail($id);
-        $user->estado_general_id = 1; 
+        $user->estado_general_id = 1;
         $user->save();
-    
+
         return response()->json(['message' => 'Servicio habilitado correctamente.']);
-        
     }
     public function filtroServi(Request $request)
     {
@@ -185,11 +201,11 @@ class ServiciosController extends Controller
                 case 'nombre':
                     $query->where('nombre', 'like', "%$valor%");
                     break;
-                
+
                 case 'codigo':
                     $query->where('codigo', 'like', "%$valor%");
                     break;
-                
+
                 case 'stock_minimo':
                     $query->where('stock_minimo', $valor);
                     break;
@@ -204,7 +220,6 @@ class ServiciosController extends Controller
                 case 'servicio_id':
                     $query->where('id', $valor);
                     break;
-
             }
         }
 
