@@ -102,7 +102,7 @@ class ServiciosController extends Controller
 
     public function getServiciosHabi()
     {
-        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->where('estado_general_id', 1)->get()->map(function ($servicio) {
+        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')->where('estado_general_id', 1)->get()->map(function ($servicio) {
             return [
                 'servicio' => $servicio ? [
                     'id' => $servicio->id,
@@ -125,6 +125,12 @@ class ServiciosController extends Controller
                     'nombre' => $servicio->categoria->nombre,
                     'descripcion' => $servicio->categoria->descripcion,
                 ] : null,
+                'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
+                    return [
+                        'nombre' => $dia->nombre,
+                        'value' => $dia->value,
+                    ];
+                }) : [],
 
 
                 'estado' => $servicio->estadoGeneral ? [
@@ -257,5 +263,45 @@ class ServiciosController extends Controller
         });
 
         return response()->json($datosFiltrados);
+    }
+    public function getTurnosHabi()
+    {
+        $servicios = Servicio::with([
+            'categoria',
+            'proveedor',
+            'estadoGeneral',
+            'diasDisponibles'
+        ])
+            ->where('estado_general_id', 1)
+            ->where('categoria_id', 6)
+            ->get()
+            ->map(function ($servicio) {
+                return [
+                    'id' => $servicio->id,
+                    'nombre' => $servicio->nombre,
+                    'codigo' => $servicio->codigo,
+                    'stock' => $servicio->stock,
+                    'stock_minimo' => $servicio->stock_minimo,
+                    'precio' => $servicio->precio,
+                    'descripcion' => $servicio->descripcion,
+                    'fecha_vencimiento' => $servicio->fecha_vencimiento,
+                    'categoria' => [
+                        'nombre' => $servicio->categoria->nombre,
+                        'descripcion' => $servicio->categoria->descripcion,
+                    ],
+                    'proveedor' => [
+                        'id' => $servicio->proveedor->id,
+                        'nombre' => $servicio->proveedor->name,
+                        'contacto' => $servicio->proveedor->email,
+                    ],
+                    'estado' => [
+                        'id' => $servicio->estadoGeneral->id,
+                        'nombre' => $servicio->estadoGeneral->nombre,
+                    ],
+                    'dias_disponibles' => $servicio->diasDisponibles->pluck('value')->toArray(),
+                    'horarios' => $servicio->horarios ?? ['09:00', '10:00', '11:00', '15:00'],
+                ];
+            });
+        return response()->json($servicios);
     }
 }
