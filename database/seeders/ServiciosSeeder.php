@@ -26,7 +26,6 @@ class ServiciosSeeder extends Seeder
             [
                 'nombre' => 'Servicios1',
                 'descripcion' => 'Descripción del Servicios 1',
-                'tipo' => 'prueba',
                 'precio' => 100,
                 'stock' => 50,
                 'stock_minimo' => 10,
@@ -44,7 +43,6 @@ class ServiciosSeeder extends Seeder
         $servicio2 = Servicio::create([
             'nombre' => 'Consulta clínica',
             'descripcion' => 'Turno de 30 minutos con la Dra. Pérez',
-            'tipo' => 'consulta_medica',
             'precio' => 5000,
             'stock' => 50,
             'stock_minimo' => 10,
