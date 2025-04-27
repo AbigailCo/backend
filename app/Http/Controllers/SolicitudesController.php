@@ -150,36 +150,38 @@ class SolicitudesController extends Controller
     }
     public function getSolicitud($id)
     {
-        $solcitud = Solicitud::findOrFail($id);
+        $solicitud = Solicitud::findOrFail($id);
         return [
-            'id' => $solcitud->id,
-            'cliente' => $solcitud->cliente ? [
-                'nombre' =>  $solcitud->cliente->name,
-                'contacto' => $solcitud->cliente->email
+            'id' => $solicitud->id,
+            'fecha_reserva' => $solicitud->fecha_reserva,
+            'hora_reserva' => $solicitud->hora_reserva,
+            'cliente' => $solicitud->cliente ? [
+                'nombre' =>  $solicitud->cliente->name,
+                'contacto' => $solicitud->cliente->email
             ] : null,
 
-            'proveedor' => $solcitud->proveedor ? [
-                'nombre' =>  $solcitud->proveedor->name,
-                'contacto' => $solcitud->proveedor->email
+            'proveedor' => $solicitud->proveedor ? [
+                'nombre' =>  $solicitud->proveedor->name,
+                'contacto' => $solicitud->proveedor->email
             ] : null,
 
-            'producto' => $solcitud->producto ? [
-                'nombre' =>  $solcitud->producto->nombre,
-                'codigo' => $solcitud->producto->codigo,
-                'stock' => $solcitud->producto->stock,
-                'precio' => $solcitud->Producto->precio,
+            'producto' => $solicitud->producto ? [
+                'nombre' =>  $solicitud->producto->nombre,
+                'codigo' => $solicitud->producto->codigo,
+                'stock' => $solicitud->producto->stock,
+                'precio' => $solicitud->Producto->precio,
             ] : null,
-            'servicio' => $solcitud->servicio ? [
-                'nombre' =>  $solcitud->servicio->nombre,
-                'codigo' => $solcitud->servicio->codigo,
-                'stock' => $solcitud->servicio->stock,
-                'precio' => $solcitud->servicio->precio,
+            'servicio' => $solicitud->servicio ? [
+                'nombre' =>  $solicitud->servicio->nombre,
+                'codigo' => $solicitud->servicio->codigo,
+                'stock' => $solicitud->servicio->stock,
+                'precio' => $solicitud->servicio->precio,
             ] : null,
-            'estado' => $solcitud->estadoGeneral ? [
-                'id' =>  $solcitud->estadoGeneral->id,
-                'nombre' => $solcitud->estadoGeneral->nombre
+            'estado' => $solicitud->estadoGeneral ? [
+                'id' =>  $solicitud->estadoGeneral->id,
+                'nombre' => $solicitud->estadoGeneral->nombre
             ] : null,
-
+       
 
         ];
     }

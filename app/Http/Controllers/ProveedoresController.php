@@ -107,6 +107,8 @@ class ProveedoresController extends Controller
                     'id' => $solicitud->estadoGeneral->id
                 ] : null,
                 'mensaje_opcional' => $solicitud->mensaje_opcional,
+                'fecha_reserva' => $solicitud->fecha_reserva,
+                'hora_reserva' => $solicitud->hora_reserva,
                 'fecha_solicitud' => $solicitud->fecha_solicitud,
                 'fecha_respuesta' => $solicitud->fecha_respuesta,
                 'estado_general_id' => $solicitud->estado_general_id,

@@ -37,7 +37,9 @@ class SolicitudesSeeder extends Seeder
                 'mensaje_opcional' => 'creado con el seeder',
                 'estado_general_id' => $estadoActivo->id,
                 'fecha_solicitud' => '2024-12-31',
-                'fecha_respuesta' =>'2024-12-31',               
+                'fecha_respuesta' =>'2024-12-31',  
+                'fecha_reserva' => '2025-04-17',
+                'hora_reserva' => '11:00'             
             ]
         );
         
