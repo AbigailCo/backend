@@ -46,7 +46,7 @@ class ServiciosController extends Controller
 
     public function getServicio($id)
     {
-        $servicio = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->findOrFail($id);
+        $servicio = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')->findOrFail($id);
         return [
             'servicio' => $servicio ? [
                 'id' => $servicio->id,
@@ -57,6 +57,17 @@ class ServiciosController extends Controller
                 'precio' => $servicio->precio,
                 'descripcion' => $servicio->descripcion,
                 'proveedor_id' => $servicio->proveedor_id,
+                'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
+                    return [
+                        'nombre' => $dia->nombre,
+                        'value' => $dia->value,
+                        'id' => $dia-> id,
+                    ];
+                }) : [],
+                'horarios'  => $servicio->horarios,
+                'fecha_vencimiento'  => $servicio->fecha_vencimiento,
+                'duracion'  => $servicio->duracion,
+                'ubicacion'  => $servicio->ubicacion,
             ] : null,
 
             'proveedor' => $servicio->proveedor ? [
@@ -65,8 +76,10 @@ class ServiciosController extends Controller
                 'proveedor_id' => $servicio->proveedor->id,
             ] : null,
             'categoria' => $servicio->categoria ? [
+                'id' => $servicio->categoria->id,
                 'nombre' => $servicio->categoria->nombre,
                 'descripcion' => $servicio->categoria->descripcion,
+                'value' => $servicio->categoria->value,
             ] : null,
 
 
@@ -82,14 +95,22 @@ class ServiciosController extends Controller
         $servicio = Servicio::findOrFail($id);
 
         $validatedData = $request->validate([
+             'proveedor_id' => 'nullable|exists:users,id',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:255',
-            'codigo' => 'required|string|max:255|unique:productos,codigo,' . $servicio->id,
+            'codigo' => 'required|string|max:255|unique:servicios,codigo,' . $servicio->id,
             'precio' => 'nullable|integer|min:0',
             'stock' => 'nullable|integer|min:0',
             'stock_minimo' => 'nullable|integer|min:0',
             'fecha_vencimiento' => 'nullable|date',
             'categoria_id' => 'nullable|exists:categorias,id',
+            'tipo' => 'nullable|string|max:255',
+            'duracion' => 'nullable|string|max:100',
+            'ubicacion' => 'nullable|string|max:255',
+            'horarios' => 'nullable|array',
+            'horarios.*' => 'string|regex:/^\d{2}:\d{2}$/',
+            'dias_disponibles' => 'nullable|array',
+            'dias_disponibles.*' => 'integer|exists:dias_semana,id',
         ]);
 
         $servicio->update($validatedData);
