@@ -113,15 +113,25 @@ class SolicitudesController extends Controller
             'notas'          => 'nullable|string|max:1000',
         ]);
         $estadoActivo = EstadoGeneral::where('value', 'pend')->first();
+        $data = $validatedData;
         $data['fecha_solicitud'] = now()->format('Y-m-d');
-        $solicitud = Solicitud::create($validatedData);
+        $data['estado_id'] = $estadoActivo->id;
+        $solicitud = Solicitud::create($data);
 
         return response()->json([
             'message' => 'Solicitud creada exitosamente',
             'solicitud' => $solicitud,
         ]);
     }
-
+    public function horariosReservados(Request $request, $id)
+    {
+        $fecha = $request->query('fecha'); 
+        $horasOcupadas = Solicitud::where('servicio_id', $id)
+            ->where('fecha_reserva', $fecha)
+            ->pluck('hora_reserva');
+    
+        return response()->json($horasOcupadas);
+    }
     public function aprobarSoli($id)
     {
         $solicitud = Solicitud::findOrFail($id);

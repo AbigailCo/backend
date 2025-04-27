@@ -14,6 +14,15 @@ class DiaSemanaSeeder extends Seeder
     public function run(): void
     {
         DiaSemana::firstOrCreate(
+            ['id' => 0],
+            [
+                'nombre' => 'Domingo',
+                'label' => 'Domingo',
+                'value' => 'dom',
+                'descripcion' => 'Dia domingo'
+            ]
+        );
+        DiaSemana::firstOrCreate(
             ['id' => 1],
             [
                 'nombre' => 'Lunes',
@@ -72,14 +81,6 @@ class DiaSemanaSeeder extends Seeder
             ]
         );
 
-        DiaSemana::firstOrCreate(
-            ['id' => 7],
-            [
-                'nombre' => 'Domingo',
-                'label' => 'Domingo',
-                'value' => 'dom',
-                'descripcion' => 'Dia domingo'
-            ]
-        );
+       
     }
 }

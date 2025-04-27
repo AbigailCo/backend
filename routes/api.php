@@ -98,3 +98,4 @@ Route::get('/my-solicitudes-cliente/{id}', [ClientesController::class, 'mySolici
 //Solicitudes
 Route::get('/solicitud/{id}', [SolicitudesController::class, 'getSolicitud']);
 Route::post('/solicitudes-filtro', [SolicitudesController::class, 'filtroSoli']);
+Route::get('/servicios/{id}/horarios-reservados', [SolicitudesController::class, 'horariosReservados']);

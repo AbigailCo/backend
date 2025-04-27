@@ -16,7 +16,8 @@ class Solicitud extends Model
        'servicio_id',
        'proveedor_id',
        'categoria_id',
-       
+       'hora_reserva',
+       'fecha_reserva'
     ];
     public function estadoGeneral()
     {

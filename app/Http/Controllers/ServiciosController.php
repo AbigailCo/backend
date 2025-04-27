@@ -113,7 +113,19 @@ class ServiciosController extends Controller
                     'precio' => $servicio->precio,
                     'descripcion' => $servicio->descripcion,
                     'proveedor_id' => $servicio->proveedor_id,
-                    'fecha_vencimiento' => $servicio->fecha_vencimiento
+                    'fecha_vencimiento' => $servicio->fecha_vencimiento,
+                    'horarios' => $servicio->horarios,
+                    'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
+                        return [
+                            'nombre' => $dia->nombre,
+                            'value' => $dia->value,
+                            'id' => $dia-> id,
+                        ];
+                    }) : [],
+                    'categoria' => $servicio->categoria ? [
+                        'nombre' => $servicio->categoria->nombre,
+                        'descripcion' => $servicio->categoria->descripcion,
+                    ] : null,
                 ] : null,
 
                 'proveedor' => $servicio->proveedor ? [
@@ -125,12 +137,7 @@ class ServiciosController extends Controller
                     'nombre' => $servicio->categoria->nombre,
                     'descripcion' => $servicio->categoria->descripcion,
                 ] : null,
-                'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
-                    return [
-                        'nombre' => $dia->nombre,
-                        'value' => $dia->value,
-                    ];
-                }) : [],
+              
 
 
                 'estado' => $servicio->estadoGeneral ? [
