@@ -114,6 +114,7 @@ class ServiciosController extends Controller
         ]);
 
         $servicio->update($validatedData);
+        $servicio->diasDisponibles()->sync($request->input('dias_disponibles', []));
 
         return response()->json([
             'message' => 'Servicio actualizado exitosamente',

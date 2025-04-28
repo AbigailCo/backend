@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\DiasSemanaController;
 use App\Http\Controllers\EstadosGeneralesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ProveedoresController;
@@ -63,6 +64,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 Route::get('/estados', [EstadosGeneralesController::class, 'getEstados']);
 Route::get('/roles', [RolesController::class, 'getRoles']);
 Route::get('/categorias', [CategoriasController::class, 'getCategorias']);
+Route::get('/dias-semana', [DiasSemanaController::class, 'getDias']);
 
 //Productos
 Route::get('/productos', [ProductosController::class, 'getProductos']);

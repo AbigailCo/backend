@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\DiaSemana;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class DiaSemanaSeeder extends Seeder
@@ -13,72 +14,18 @@ class DiaSemanaSeeder extends Seeder
      */
     public function run(): void
     {
-        DiaSemana::firstOrCreate(
-            ['id' => 0],
+        DB::table('dias_semana')->upsert(
             [
-                'nombre' => 'Domingo',
-                'label' => 'Domingo',
-                'value' => 'dom',
-                'descripcion' => 'Dia domingo'
-            ]
-        );
-        DiaSemana::firstOrCreate(
-            ['id' => 1],
-            [
-                'nombre' => 'Lunes',
-                'label' => 'Lunes',
-                'value' => 'lun',
-                'descripcion' => 'Dia lunes'
-            ]
-        );
-        DiaSemana::firstOrCreate(
-            ['id' => 2],
-            [
-                'nombre' => 'Martes',
-                'label' => 'Martes',
-                'value' => 'mar',
-                'descripcion' => 'Dia martes'
-            ]
-        );
-
-        DiaSemana::firstOrCreate(
-            ['id' => 3],
-            [
-                'nombre' => 'Miercoles',
-                'label' => 'Miercoles',
-                'value' => 'mier',
-                'descripcion' => 'Dia miercoles'
-            ]
-        );
-
-        DiaSemana::firstOrCreate(
-            ['id' => 4],
-            [
-                'nombre' => 'Jueves',
-                'label' => 'Jueves',
-                'value' => 'juev',
-                'descripcion' => 'Dia jueves'
-            ]
-        );
-
-        DiaSemana::firstOrCreate(
-            ['id' => 5],
-            [
-                'nombre' => 'Viernes',
-                'label' => 'Viernes',
-                'value' => 'vier',
-                'descripcion' => 'Dia viernes'
-            ]
-        );
-
-        DiaSemana::firstOrCreate(
-            ['id' => 6],
-            [
-                'nombre' => 'Sabado',
-                'label' => 'Sabado',
-                'value' => 'sab',
-                'descripcion' => 'Dia sabado'
-            ]
+              ['id'=> 0,'nombre'=>'Domingo',   'label'=>'Domingo',   'value'=>'dom',  'descripcion'=>'Dia domingo'],
+              ['id'=> 1,'nombre'=>'Lunes',     'label'=>'Lunes',     'value'=>'lun',  'descripcion'=>'Dia lunes'],
+              ['id'=> 2,'nombre'=>'Martes',    'label'=>'Martes',    'value'=>'mar',  'descripcion'=>'Dia martes'],
+              ['id'=> 3,'nombre'=>'Miércoles', 'label'=>'Miércoles', 'value'=>'mier','descripcion'=>'Dia miércoles'],
+              ['id'=> 4,'nombre'=>'Jueves',    'label'=>'Jueves',    'value'=>'juev','descripcion'=>'Dia jueves'],
+              ['id'=> 5,'nombre'=>'Viernes',   'label'=>'Viernes',   'value'=>'vier','descripcion'=>'Dia viernes'],
+              ['id'=> 6,'nombre'=>'Sábado',    'label'=>'Sábado',    'value'=>'sab',  'descripcion'=>'Dia sábado'],
+            ],
+            ['id'],  // columna(es) para detectar duplicados
+            ['nombre','label','value','descripcion']  // columnas a actualizar
         );
 
        

@@ -29,8 +29,8 @@ class Servicio extends Model
 
       protected $casts = [
         'horarios' => 'array',
+        'dias_disponibles' => 'array',
       ];
-  
       public function categoria()
       {
           return $this->belongsTo(Categoria::class, 'categoria_id');
