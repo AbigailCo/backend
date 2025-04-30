@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EstadoGeneral;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 
@@ -58,42 +59,5 @@ class TurnosController extends Controller
         });
         return response()->json($servicios);
     }
-    public function storeServicio(Request $request)
-    {
-        $validatedData = $request->validate([
-            'proveedor_id' => 'nullable|exists:users,id',
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:255',
-            'codigo' => 'required|string|max:255|unique:servicios,codigo',
-            'precio' => 'nullable|integer|min:0',
-            'stock' => 'nullable|integer|min:0',
-            'stock_minimo' => 'nullable|integer|min:0',
-            'fecha_vencimiento' => 'nullable|date',
-            'categoria_id' => 'nullable|exists:categorias,id',
-            'tipo' => 'nullable|string|max:255',
-            'duracion' => 'nullable|string|max:100',
-            'ubicacion' => 'nullable|string|max:255',
-            'horarios' => 'nullable|array',
-            'horarios.*' => 'string|regex:/^\d{2}:\d{2}$/',
-            'dias_disponibles' => 'nullable|array',
-            'dias_disponibles.*' => 'integer|exists:dias_semana,id',
-        ]);
-        $estadoActivo = EstadoGeneral::where('value', 'act')->first();
-
-        $servicio = Servicio::create([
-            ...$validatedData,
-            'estado_general_id' => $estadoActivo->id,
-            'horarios' => json_encode($validatedData['horarios'] ?? []),
-        ]);
-        if (!empty($validatedData['dias_disponibles'])) {
-            $servicio->diasDisponibles()->sync($validatedData['dias_disponibles']);
-        }
-
-
-
-        return response()->json([
-            'message' => 'Servicio creado exitosamente',
-            'servicios' => $servicio,
-        ]);
-    }
+   
 }
