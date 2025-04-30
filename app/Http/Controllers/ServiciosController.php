@@ -124,7 +124,11 @@ class ServiciosController extends Controller
 
     public function getServiciosHabi()
     {
-        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')->where('estado_general_id', 1)->get()->map(function ($servicio) {
+        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')
+        ->where('estado_general_id', 1)
+        ->where('fecha_vencimiento', '>=', now())
+        ->get()
+        ->map(function ($servicio) {
             return [
                 'servicio' => $servicio ? [
                     'id' => $servicio->id,
