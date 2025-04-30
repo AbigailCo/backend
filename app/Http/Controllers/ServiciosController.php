@@ -61,7 +61,7 @@ class ServiciosController extends Controller
                     return [
                         'nombre' => $dia->nombre,
                         'value' => $dia->value,
-                        'id' => $dia-> id,
+                        'id' => $dia->id,
                     ];
                 }) : [],
                 'horarios'  => $servicio->horarios,
@@ -95,7 +95,7 @@ class ServiciosController extends Controller
         $servicio = Servicio::findOrFail($id);
 
         $validatedData = $request->validate([
-             'proveedor_id' => 'nullable|exists:users,id',
+            'proveedor_id' => 'nullable|exists:users,id',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:255',
             'codigo' => 'required|string|max:255|unique:servicios,codigo,' . $servicio->id,
@@ -141,7 +141,7 @@ class ServiciosController extends Controller
                         return [
                             'nombre' => $dia->nombre,
                             'value' => $dia->value,
-                            'id' => $dia-> id,
+                            'id' => $dia->id,
                         ];
                     }) : [],
                     'categoria' => $servicio->categoria ? [
@@ -159,7 +159,7 @@ class ServiciosController extends Controller
                     'nombre' => $servicio->categoria->nombre,
                     'descripcion' => $servicio->categoria->descripcion,
                 ] : null,
-              
+
 
 
                 'estado' => $servicio->estadoGeneral ? [
@@ -245,7 +245,9 @@ class ServiciosController extends Controller
                     $query->where('stock_minimo', $valor);
                     break;
                 case 'estado_general':
-                    $query->where('estado_general_id', 'like', "%$valor%");
+                    $query->whereHas('estadoGeneral', function ($q) use ($valor) {
+                        $q->where('nombre', 'like', "%$valor%");
+                    });
                     break;
 
                 case 'fecha_vencimiento':
@@ -254,6 +256,37 @@ class ServiciosController extends Controller
 
                 case 'servicio_id':
                     $query->where('id', $valor);
+                    break;
+                case 'dias_disponibles':
+                    $query->whereHas('diasDisponibles', function ($q) use ($valor) {
+                        if (is_array($valor)) {
+                            $q->whereIn('nombre', $valor); // suponiendo que `nombre` es como "Lunes", "Martes"
+                        } else {
+                            $q->where('nombre', 'like', "%$valor%");
+                        }
+                    });
+                    break;
+                case 'categoria':
+                    $query->whereHas('categoria', function ($q) use ($valor) {
+                        if (is_array($valor)) {
+                            $q->whereIn('nombre', $valor);
+                        } else {
+                            $q->where('nombre', 'like', "%$valor%");
+                        }
+                    });
+                    break;
+                case 'proveedor_nombre':
+                    $query->whereHas('categoria', function ($q) {
+                        $q->where('nombre', 'Turno'); 
+                    });
+
+                    $query->whereHas('proveedor', function ($q) use ($valor) {
+                        if (is_array($valor)) {
+                            $q->whereIn('name', $valor);
+                        } else {
+                            $q->where('name', 'like', "%$valor%");
+                        }
+                    });
                     break;
             }
         }
@@ -271,6 +304,18 @@ class ServiciosController extends Controller
                     'precio' => $servicio->precio,
                     'descripcion' => $servicio->descripcion,
                     'proveedor_id' => $servicio->proveedor_id,
+                    'horarios' => $servicio->horarios,
+                    'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
+                        return [
+                            'nombre' => $dia->nombre,
+                            'value' => $dia->value,
+                            'id' => $dia->id,
+                        ];
+                    }) : [],
+                    'categoria' => $servicio->categoria ? [
+                        'nombre' => $servicio->categoria->nombre,
+                        'descripcion' => $servicio->categoria->descripcion,
+                    ] : null,
                 ] : null,
 
                 'proveedor' => $servicio->proveedor ? [
@@ -292,45 +337,5 @@ class ServiciosController extends Controller
         });
 
         return response()->json($datosFiltrados);
-    }
-    public function getTurnosHabi()
-    {
-        $servicios = Servicio::with([
-            'categoria',
-            'proveedor',
-            'estadoGeneral',
-            'diasDisponibles'
-        ])
-            ->where('estado_general_id', 1)
-            ->where('categoria_id', 6)
-            ->get()
-            ->map(function ($servicio) {
-                return [
-                    'id' => $servicio->id,
-                    'nombre' => $servicio->nombre,
-                    'codigo' => $servicio->codigo,
-                    'stock' => $servicio->stock,
-                    'stock_minimo' => $servicio->stock_minimo,
-                    'precio' => $servicio->precio,
-                    'descripcion' => $servicio->descripcion,
-                    'fecha_vencimiento' => $servicio->fecha_vencimiento,
-                    'categoria' => [
-                        'nombre' => $servicio->categoria->nombre,
-                        'descripcion' => $servicio->categoria->descripcion,
-                    ],
-                    'proveedor' => [
-                        'id' => $servicio->proveedor->id,
-                        'nombre' => $servicio->proveedor->name,
-                        'contacto' => $servicio->proveedor->email,
-                    ],
-                    'estado' => [
-                        'id' => $servicio->estadoGeneral->id,
-                        'nombre' => $servicio->estadoGeneral->nombre,
-                    ],
-                    'dias_disponibles' => $servicio->diasDisponibles->pluck('value')->toArray(),
-                    'horarios' => $servicio->horarios ?? ['09:00', '10:00', '11:00', '15:00'],
-                ];
-            });
-        return response()->json($servicios);
     }
 }

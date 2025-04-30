@@ -10,6 +10,7 @@ use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\SolicitudesController;
+use App\Http\Controllers\TurnosController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -101,3 +102,6 @@ Route::get('/my-solicitudes-cliente/{id}', [ClientesController::class, 'mySolici
 Route::get('/solicitud/{id}', [SolicitudesController::class, 'getSolicitud']);
 Route::post('/solicitudes-filtro', [SolicitudesController::class, 'filtroSoli']);
 Route::get('/servicios/{id}/horarios-reservados', [SolicitudesController::class, 'horariosReservados']);
+
+//Turnos
+Route::get('/turnos', [TurnosController::class, 'getTurnos']);
