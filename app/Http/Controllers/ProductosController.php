@@ -48,39 +48,39 @@ class ProductosController extends Controller
     public function getProductosHabi()
     {
         $productos = Producto::with('categoria', 'proveedor', 'estado')
-        ->where('estado_general_id', 1)
-        ->where('fecha_vencimiento', '>=', now())
-        ->get()->map(function ($producto) {
-            return [
-               'producto' => $producto ? [
-                    'id' => $producto->id,
-                    'nombre' => $producto->nombre,
-                    'codigo' => $producto->codigo,
-                    'stock' => $producto->stock,
-                    'stock_minimo' => $producto->stock_minimo,
-                    'precio' => $producto->precio,
-                    'descripcion' => $producto->descripcion,
-                    'proveedor_id' => $producto->proveedor_id,
-                    'fecha_vencimiento' => $producto->fecha_vencimiento
-                ] : null,
+            ->where('estado_general_id', 1)
+            ->where('fecha_vencimiento', '>=', now())
+            ->get()->map(function ($producto) {
+                return [
+                    'producto' => $producto ? [
+                        'id' => $producto->id,
+                        'nombre' => $producto->nombre,
+                        'codigo' => $producto->codigo,
+                        'stock' => $producto->stock,
+                        'stock_minimo' => $producto->stock_minimo,
+                        'precio' => $producto->precio,
+                        'descripcion' => $producto->descripcion,
+                        'proveedor_id' => $producto->proveedor_id,
+                        'fecha_vencimiento' => $producto->fecha_vencimiento
+                    ] : null,
 
-                'proveedor' => $producto->proveedor ? [
-                    'nombre' => $producto->proveedor->name,
-                    'contacto' => $producto->proveedor->email,
-                    'proveedor_id' => $producto->proveedor->id,
-                ] : null,
-                'categoria' => $producto->categoria ? [
-                    'nombre' => $producto->categoria->nombre,
-                    'descripcion' => $producto->categoria->descripcion,
-                ] : null,
+                    'proveedor' => $producto->proveedor ? [
+                        'nombre' => $producto->proveedor->name,
+                        'contacto' => $producto->proveedor->email,
+                        'proveedor_id' => $producto->proveedor->id,
+                    ] : null,
+                    'categoria' => $producto->categoria ? [
+                        'nombre' => $producto->categoria->nombre,
+                        'descripcion' => $producto->categoria->descripcion,
+                    ] : null,
 
 
-                'estado' => $producto->estado ? [
-                    'id' => $producto->estado->id,
-                    'nombre' => $producto->estado->nombre,
-                ] : null,
-            ];
-        });
+                    'estado' => $producto->estado ? [
+                        'id' => $producto->estado->id,
+                        'nombre' => $producto->estado->nombre,
+                    ] : null,
+                ];
+            });
         return response()->json($productos);
     }
 
@@ -189,16 +189,18 @@ class ProductosController extends Controller
                 case 'nombre':
                     $query->where('nombre', 'like', "%$valor%");
                     break;
-                
+
                 case 'codigo':
                     $query->where('codigo', 'like', "%$valor%");
                     break;
-                
+
                 case 'stock_minimo':
                     $query->where('stock_minimo', $valor);
                     break;
                 case 'estado_general':
-                    $query->where('estado_general_id', 'like', "%$valor%");
+                    $query->whereHas('estado', function ($q) use ($valor) {
+                        $q->where('value', $valor);
+                    });
                     break;
 
                 case 'fecha_vencimiento':
@@ -208,7 +210,15 @@ class ProductosController extends Controller
                 case 'producto_id':
                     $query->where('id', $valor);
                     break;
-
+                case 'categoria_id':
+                    $query->whereHas('categoria', function ($q) use ($valor) {
+                        if (is_array($valor)) {
+                            $q->whereIn('id', $valor);
+                        } else {
+                            $q->where('id', $valor);
+                        }
+                    });
+                    break;
             }
         }
 
