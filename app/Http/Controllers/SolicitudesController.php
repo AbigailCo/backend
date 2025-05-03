@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\EstadoGeneral;
 use App\Models\Producto;
+use App\Models\Servicio;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SolicitudesController extends Controller
 {
@@ -45,11 +47,12 @@ class SolicitudesController extends Controller
                     break;
 
                 case 'cliente':
-                    $query->whereHas('cliente', fn($q) => $q->where('nombre', 'like', "%$valor%"));
+                    $query->whereHas('cliente', fn($q) => $q->where('name', 'like', "%$valor%"));
                     break;
-
                 case 'estado_general':
-                    $query->where('estado_general', 'like', "%$valor%");
+                    $query->whereHas('estadoGeneral', function ($q) use ($valor) {
+                        $q->where('value', $valor);
+                    });
                     break;
 
                 case 'fecha_vencimiento':
@@ -62,6 +65,16 @@ class SolicitudesController extends Controller
 
                 case 'servicio_id':
                     $query->where('servicio_id', $valor);
+                    break;
+                case 'categoria_id':
+                    $query->where(function ($q) use ($valor) {
+                        $q->whereHas('producto.categoria', function ($q1) use ($valor) {
+                            $q1->where('id', $valor);
+                        })
+                            ->orWhereHas('servicio.categoria', function ($q2) use ($valor) {
+                                $q2->where('id', $valor);
+                            });
+                    });
                     break;
             }
         }
@@ -118,6 +131,23 @@ class SolicitudesController extends Controller
         $data['estado_id'] = $estadoActivo->id;
         $solicitud = Solicitud::create($data);
 
+
+        if (!empty($validatedData['producto_id'])) {
+            $producto = Producto::find($validatedData['producto_id']);
+            if ($producto && $producto->stock > 0) {
+                $producto->stock -= 1;
+                $producto->save();
+            }
+        }
+
+        if (!empty($validatedData['servicio_id'])) {
+            $servicio = Servicio::find($validatedData['servicio_id']);
+            if ($servicio && $servicio->stock > 0) {
+                $servicio->stock -= 1;
+                $servicio->save();
+            }
+        }
+
         return response()->json([
             'message' => 'Solicitud creada exitosamente',
             'solicitud' => $solicitud,
@@ -125,11 +155,11 @@ class SolicitudesController extends Controller
     }
     public function horariosReservados(Request $request, $id)
     {
-        $fecha = $request->query('fecha'); 
+        $fecha = $request->query('fecha');
         $horasOcupadas = Solicitud::where('servicio_id', $id)
             ->where('fecha_reserva', $fecha)
             ->pluck('hora_reserva');
-    
+
         return response()->json($horasOcupadas);
     }
     public function aprobarSoli($id)
@@ -145,6 +175,22 @@ class SolicitudesController extends Controller
         $solicitud = Solicitud::findOrFail($id);
         $solicitud->estado_general_id = 6;
         $solicitud->save();
+
+        if ($solicitud->producto_id) {
+            $producto = Producto::find($solicitud->producto_id);
+            if ($producto) {
+                $producto->stock += 1;
+                $producto->save();
+            }
+        }
+
+        if ($solicitud->servicio_id) {
+            $servicio = Servicio::find($solicitud->servicio_id);
+            if ($servicio) {
+                $servicio->stock += 1;
+                $servicio->save();
+            }
+        }
 
         return response()->json(['message' => 'Solicitud rechazada.']);
     }
@@ -181,7 +227,7 @@ class SolicitudesController extends Controller
                 'id' =>  $solicitud->estadoGeneral->id,
                 'nombre' => $solicitud->estadoGeneral->nombre
             ] : null,
-       
+
 
         ];
     }

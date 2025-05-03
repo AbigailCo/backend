@@ -87,8 +87,8 @@ class ProveedoresController extends Controller
                 'id' => $solicitud->id,
                 'cliente' => $solicitud->cliente ? [
                     'id' => $solicitud->cliente->id,
-                    'name' => $solicitud->cliente->name,
-                    'email' => $solicitud->cliente->email,
+                    'nombre' => $solicitud->cliente->name,
+                    'contacto' => $solicitud->cliente->email,
                 ] : null,
                 'producto' => $solicitud->producto ? [
                     'id' => $solicitud->producto->id,
