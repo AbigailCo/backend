@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Servicio;
+namespace App\Http\Requests\Producto;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServicioFiltroRequest extends FormRequest
+class ProductoFiltroRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,7 @@ class ServicioFiltroRequest extends FormRequest
             'stock_minimo' => 'nullable|integer',
             'estado_general' => 'nullable|string',
             'fecha_vencimiento' => 'nullable|date',
-            'servicio_id' => 'nullable|integer',
-            'dias_disponibles' => 'nullable|array',
-            'dias_disponibles.*' => 'string',
+            'producto_id' => 'nullable|integer',
             'categoria_id' => [
                 'nullable',
                 function ($attribute, $value, $fail) {

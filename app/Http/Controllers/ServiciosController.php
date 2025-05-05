@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ServicioEditRequest;
-use App\Http\Requests\ServicioFiltroRequest;
-use App\Http\Requests\ServicioStoreRequest;
-use App\Http\Resources\ServicioResource;
+use App\Http\Requests\Servicio\ServicioEditRequest;
+use App\Http\Requests\Servicio\ServicioFiltroRequest;
+use App\Http\Requests\Servicio\ServicioStoreRequest;
+use App\Http\Resources\Servicio\ServicioResource;
 use App\Models\EstadoGeneral;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
