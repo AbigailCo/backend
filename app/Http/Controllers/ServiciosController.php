@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ServicioEditRequest;
+use App\Http\Requests\ServicioFiltroRequest;
+use App\Http\Requests\ServicioStoreRequest;
+use App\Http\Resources\ServicioResource;
 use App\Models\EstadoGeneral;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
@@ -11,114 +15,28 @@ class ServiciosController extends Controller
 {
     public function getServicios()
     {
-        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->get()->map(function ($servicio) {
-            return [
-                'servicio' => $servicio ? [
-                    'id' => $servicio->id,
-                    'nombre' => $servicio->nombre,
-                    'codigo' => $servicio->codigo,
-                    'stock' => $servicio->stock,
-                    'stock_minimo' => $servicio->stock_minimo,
-                    'precio' => $servicio->precio,
-                    'descripcion' => $servicio->descripcion,
-                    'fecha_vencimiento' => $servicio->fecha_vencimiento
-                ] : null,
-
-                'proveedor' => $servicio->proveedor ? [
-                    'nombre' => $servicio->proveedor->name,
-                    'contacto' => $servicio->proveedor->email,
-                    'proveedor_id' => $servicio->proveedor->id,
-                ] : null,
-                'categoria' => $servicio->categoria ? [
-                    'nombre' => $servicio->categoria->nombre,
-                    'descripcion' => $servicio->categoria->descripcion,
-                ] : null,
-
-
-                'estado' => $servicio->estadoGeneral ? [
-                    'id' => $servicio->estadoGeneral->id,
-                    'nombre' => $servicio->estadoGeneral->nombre,
-                ] : null,
-            ];
-        });
-        return response()->json($servicios);
+        $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral')->get();
+        return ServicioResource::collection($servicios);
     }
 
     public function getServicio($id)
     {
         $servicio = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')->findOrFail($id);
-        return [
-            'servicio' => $servicio ? [
-                'id' => $servicio->id,
-                'nombre' => $servicio->nombre,
-                'codigo' => $servicio->codigo,
-                'stock' => $servicio->stock,
-                'stock_minimo' => $servicio->stock_minimo,
-                'precio' => $servicio->precio,
-                'descripcion' => $servicio->descripcion,
-                'proveedor_id' => $servicio->proveedor_id,
-                'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
-                    return [
-                        'nombre' => $dia->nombre,
-                        'value' => $dia->value,
-                        'id' => $dia->id,
-                    ];
-                }) : [],
-                'horarios'  => $servicio->horarios,
-                'fecha_vencimiento'  => $servicio->fecha_vencimiento,
-                'duracion'  => $servicio->duracion,
-                'ubicacion'  => $servicio->ubicacion,
-            ] : null,
-
-            'proveedor' => $servicio->proveedor ? [
-                'nombre' => $servicio->proveedor->name,
-                'contacto' => $servicio->proveedor->email,
-                'proveedor_id' => $servicio->proveedor->id,
-            ] : null,
-            'categoria' => $servicio->categoria ? [
-                'id' => $servicio->categoria->id,
-                'nombre' => $servicio->categoria->nombre,
-                'descripcion' => $servicio->categoria->descripcion,
-                'value' => $servicio->categoria->value,
-            ] : null,
-
-
-            'estado' => $servicio->estadoGeneral ? [
-                'id' => $servicio->estadoGeneral->id,
-                'nombre' => $servicio->estadoGeneral->nombre,
-            ] : null,
-        ];
+        return new ServicioResource($servicio);
     }
 
-    public function editServicio(Request $request, $id)
+    public function editServicio(ServicioEditRequest $request, $id)
     {
         $servicio = Servicio::findOrFail($id);
 
-        $validatedData = $request->validate([
-            'proveedor_id' => 'nullable|exists:users,id',
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:255',
-            'codigo' => 'required|string|max:255|unique:servicios,codigo,' . $servicio->id,
-            'precio' => 'nullable|integer|min:0',
-            'stock' => 'nullable|integer|min:0',
-            'stock_minimo' => 'nullable|integer|min:0',
-            'fecha_vencimiento' => 'nullable|date',
-            'categoria_id' => 'nullable|exists:categorias,id',
-            'tipo' => 'nullable|string|max:255',
-            'duracion' => 'nullable|string|max:100',
-            'ubicacion' => 'nullable|string|max:255',
-            'horarios' => 'nullable|array',
-            'horarios.*' => 'string|regex:/^\d{2}:\d{2}$/',
-            'dias_disponibles' => 'nullable|array',
-            'dias_disponibles.*' => 'integer|exists:dias_semana,id',
-        ]);
+        $validatedData = $request->validated();
 
         $servicio->update($validatedData);
         $servicio->diasDisponibles()->sync($request->input('dias_disponibles', []));
 
         return response()->json([
             'message' => 'Servicio actualizado exitosamente',
-            'servicio' => $servicio,
+            'servicio' => new ServicioResource($servicio),
         ]);
     }
 
@@ -127,89 +45,28 @@ class ServiciosController extends Controller
         $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')
             ->where('estado_general_id', 1)
             ->where('fecha_vencimiento', '>=', now())
-            ->get()
-            ->map(function ($servicio) {
-                return [
-                    'servicio' => $servicio ? [
-                        'id' => $servicio->id,
-                        'nombre' => $servicio->nombre,
-                        'codigo' => $servicio->codigo,
-                        'stock' => $servicio->stock,
-                        'stock_minimo' => $servicio->stock_minimo,
-                        'precio' => $servicio->precio,
-                        'descripcion' => $servicio->descripcion,
-                        'proveedor_id' => $servicio->proveedor_id,
-                        'fecha_vencimiento' => $servicio->fecha_vencimiento,
-                        'horarios' => $servicio->horarios,
-                        'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
-                            return [
-                                'nombre' => $dia->nombre,
-                                'value' => $dia->value,
-                                'id' => $dia->id,
-                            ];
-                        }) : [],
-                        'categoria' => $servicio->categoria ? [
-                            'nombre' => $servicio->categoria->nombre,
-                            'descripcion' => $servicio->categoria->descripcion,
-                        ] : null,
-                    ] : null,
-
-                    'proveedor' => $servicio->proveedor ? [
-                        'nombre' => $servicio->proveedor->name,
-                        'contacto' => $servicio->proveedor->email,
-                        'proveedor_id' => $servicio->proveedor->id,
-                    ] : null,
-                    'categoria' => $servicio->categoria ? [
-                        'nombre' => $servicio->categoria->nombre,
-                        'descripcion' => $servicio->categoria->descripcion,
-                    ] : null,
-
-
-
-                    'estado' => $servicio->estadoGeneral ? [
-                        'id' => $servicio->estadoGeneral->id,
-                        'nombre' => $servicio->estadoGeneral->nombre,
-                    ] : null,
-                ];
-            });
-        return response()->json($servicios);
+            ->get();
+        return response()->json(ServicioResource::collection($servicios));
     }
-    public function storeServicio(Request $request)
+    public function storeServicio(ServicioStoreRequest $request)
     {
-        $validatedData = $request->validate([
-            'proveedor_id' => 'nullable|exists:users,id',
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:255',
-            'codigo' => 'required|string|max:255|unique:servicios,codigo',
-            'precio' => 'nullable|integer|min:0',
-            'stock' => 'nullable|integer|min:0',
-            'stock_minimo' => 'nullable|integer|min:0',
-            'fecha_vencimiento' => 'nullable|date',
-            'categoria_id' => 'nullable|exists:categorias,id',
-            'tipo' => 'nullable|string|max:255',
-            'duracion' => 'nullable|string|max:100',
-            'ubicacion' => 'nullable|string|max:255',
-            'horarios' => 'nullable|array',
-            'horarios.*' => 'string|regex:/^\d{2}:\d{2}$/',
-            'dias_disponibles' => 'nullable|array',
-            'dias_disponibles.*' => 'integer|exists:dias_semana,id',
-        ]);
+        $validated = $request->validated();
         $estadoActivo = EstadoGeneral::where('value', 'act')->first();
 
         $servicio = Servicio::create([
-            ...$validatedData,
+            ...$validated,
             'estado_general_id' => $estadoActivo->id,
-            'horarios' => json_encode($validatedData['horarios'] ?? []),
+            'horarios' => json_encode($validated['horarios'] ?? []),
         ]);
-        if (!empty($validatedData['dias_disponibles'])) {
-            $servicio->diasDisponibles()->sync($validatedData['dias_disponibles']);
+        if (!empty($validated['dias_disponibles'])) {
+            $servicio->diasDisponibles()->sync($validated['dias_disponibles']);
         }
 
 
 
         return response()->json([
             'message' => 'Servicio creado exitosamente',
-            'servicios' => $servicio,
+            'servicio' => new ServicioResource($servicio),
         ]);
     }
 
@@ -229,117 +86,12 @@ class ServiciosController extends Controller
 
         return response()->json(['message' => 'Servicio habilitado correctamente.']);
     }
-    public function filtroServi(Request $request)
+    public function filtroServi(ServicioFiltroRequest $request)
     {
-        $query = Servicio::query();
-        $filtros = $request->all();
+        $servicios = Servicio::with(['proveedor', 'estadoGeneral', 'categoria', 'diasDisponibles'])
+            ->filtrar($request->validated())
+            ->get();
 
-
-        foreach ($filtros as $campo => $valor) {
-            switch ($campo) {
-                case 'nombre':
-                    $query->where('nombre', 'like', "%$valor%");
-                    break;
-
-                case 'codigo':
-                    $query->where('codigo', 'like', "%$valor%");
-                    break;
-
-                case 'stock_minimo':
-                    $query->where('stock_minimo', $valor);
-                    break;
-                case 'estado_general':
-                    $query->whereHas('estadoGeneral', function ($q) use ($valor) {
-                        $q->where('value', $valor);
-                    });
-                    break;
-
-                case 'fecha_vencimiento':
-                    $query->whereDate('fecha_vencimiento', $valor);
-                    break;
-
-                case 'servicio_id':
-                    $query->where('id', $valor);
-                    break;
-                case 'dias_disponibles':
-                    $query->whereHas('diasDisponibles', function ($q) use ($valor) {
-                        if (is_array($valor)) {
-                            $q->whereIn('nombre', $valor); // suponiendo que `nombre` es como "Lunes", "Martes"
-                        } else {
-                            $q->where('nombre', 'like', "%$valor%");
-                        }
-                    });
-                    break;
-                case 'categoria_id':
-                    $query->whereHas('categoria', function ($q) use ($valor) {
-                        if (is_array($valor)) {
-                            $q->whereIn('id', $valor); 
-                        } else {
-                            $q->where('id', $valor);
-                        }
-                    });
-                    break;
-                case 'proveedor_nombre':
-                    $query->whereHas('categoria', function ($q) {
-                        $q->where('nombre', 'Turno');
-                    });
-
-                    $query->whereHas('proveedor', function ($q) use ($valor) {
-                        if (is_array($valor)) {
-                            $q->whereIn('name', $valor);
-                        } else {
-                            $q->where('name', 'like', "%$valor%");
-                        }
-                    });
-                    break;
-            }
-        }
-
-        $resultados = $query->with(['proveedor', 'estadoGeneral', 'categoria'])->get();
-
-        $datosFiltrados = $resultados->map(function ($servicio) {
-            return [
-                'servicio' => $servicio ? [
-                    'id' => $servicio->id,
-                    'nombre' => $servicio->nombre,
-                    'codigo' => $servicio->codigo,
-                    'stock' => $servicio->stock,
-                    'stock_minimo' => $servicio->stock_minimo,
-                    'precio' => $servicio->precio,
-                    'descripcion' => $servicio->descripcion,
-                    'proveedor_id' => $servicio->proveedor_id,
-                    'horarios' => $servicio->horarios,
-                    'dias_disponibles' => $servicio->diasDisponibles ? $servicio->diasDisponibles->map(function ($dia) {
-                        return [
-                            'nombre' => $dia->nombre,
-                            'value' => $dia->value,
-                            'id' => $dia->id,
-                        ];
-                    }) : [],
-                    'categoria' => $servicio->categoria ? [
-                        'nombre' => $servicio->categoria->nombre,
-                        'descripcion' => $servicio->categoria->descripcion,
-                    ] : null,
-                ] : null,
-
-                'proveedor' => $servicio->proveedor ? [
-                    'nombre' => $servicio->proveedor->name,
-                    'contacto' => $servicio->proveedor->email,
-                    'proveedor_id' => $servicio->proveedor->id,
-                ] : null,
-                'categoria' => $servicio->categoria ? [
-                    'nombre' => $servicio->categoria->nombre,
-                    'descripcion' => $servicio->categoria->descripcion,
-                ] : null,
-
-
-                'estado' => $servicio->estadoGeneral ? [
-                    'id' => $servicio->estadoGeneral->id,
-                    'nombre' => $servicio->estadoGeneral->nombre,
-                ] : null,
-            ];
-        });
-
-        return response()->json($datosFiltrados);
+        return response()->json(ServicioResource::collection($servicios));
     }
 }
