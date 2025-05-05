@@ -22,6 +22,8 @@ class SolicitudFiltroRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => 'nullable', 'exists:users,id',
+
             'proveedor_id' => 'nullable|exists:users,id',
             'cliente_id' => 'nullable|exists:users,id',
             'nombre' => 'nullable|string',

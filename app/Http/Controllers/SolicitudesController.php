@@ -18,6 +18,7 @@ class SolicitudesController extends Controller
     public function filtroSoli(SolicitudFiltroRequest $request)
     {
         $solicitudes = Solicitud::with(['cliente', 'producto', 'servicio', 'proveedor', 'estadoGeneral'])
+        
             ->filtrar($request->validated())
             ->get();
     
