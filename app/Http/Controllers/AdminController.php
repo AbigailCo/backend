@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserEditRequest;
+use App\Http\Requests\User\UserStoreRequest;
+use App\Http\Resources\Users\UserResource;
 use App\Models\EstadoGeneral;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -18,37 +21,18 @@ class AdminController extends Controller
 
     public function getUsers()
     {
-        $users = User::with('roles')->get()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'estado_general_id' => $user->estado_general_id,
-                'roles' => $user->getRoleNames(),
-            ];
-        });
-        return response()->json($users);
+        $users = User::with('roles')->get();
+        return UserResource::collection($users);
     }
 
 
     public function getUser($id)
     {
         $user = User::findOrFail($id);
-        return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'passwoard' => $user->password,
-                'email_verified_at' => $user->email_verified_at,
-                'remember_token' => $user->remember_token,
-                'estado_general_id' => $user->estado_general_id,
-                'roles' => $user->getRoleNames(),
-        ];
+        return new UserResource($user);
     }
 
-    public function editUser(Request $request, $id)
+    public function editUser(UserEditRequest $request, $id)
     {
         if (!$request->user()->hasRole('admin')) {
             return response()->json(['error' => 'No autorizado'], 403);
@@ -57,12 +41,7 @@ class AdminController extends Controller
 
         $user = User::findOrFail($id);
       
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|exists:roles,name',
-        ]);
+        $validated = $request->validated();
         
         $user->update([
             'name' => $validated['name'],
@@ -97,20 +76,11 @@ class AdminController extends Controller
         
     }
 
-    public function storeUser(Request $request): JsonResponse
+    public function storeUser(UserStoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'exists:roles,name'],
-        ]);
+        $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->string('password')),
-        ]);
+        $user = User::create($validated);
        
         $user->assignRole([$request['role']]);
         $estadoActivo = EstadoGeneral::where('value', 'act')->first();
@@ -119,13 +89,7 @@ class AdminController extends Controller
 
         return response()->json([
             'message' => 'Registro exitoso',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'estado_general_id' => $estadoActivo->id,
-                'roles' => $user->getRoleNames(),
-            ],
+            'user' => new UserResource($user),
            
         ]);
     }
