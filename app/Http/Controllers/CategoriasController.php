@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EstadosGenerales\EstadosGeneralesResource;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 
@@ -10,15 +11,8 @@ class CategoriasController extends Controller
 {
     public function getCategorias()
     {
-        $categorias = Categoria::all()
-            ->map(function ($categoria) {
-                return [
-                    'id' => $categoria->id,
-                    'nombre' => $categoria->nombre,
-                    'descripcion' => $categoria->descripcion,   
-                ];
-            });
+        $categorias = Categoria::all();
 
-        return response()->json($categorias);
+        return EstadosGeneralesResource::collection($categorias);
     }
 }

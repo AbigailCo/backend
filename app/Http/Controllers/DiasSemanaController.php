@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EstadosGenerales\EstadosGeneralesResource;
 use App\Models\DiaSemana;
 use Illuminate\Http\Request;
 
@@ -9,16 +10,8 @@ class DiasSemanaController extends Controller
 {
     public function getDias()
     {
-        $diasSemana = DiaSemana::all()
-            ->map(function ($diaSemana) {
-                return [
-                    'id' => $diaSemana->id,
-                    'nombre' => $diaSemana->nombre,
-                    'descripcion' => $diaSemana->descripcion,
-                
-                ];
-            });
+        $diasSemana = DiaSemana::all();
 
-        return response()->json($diasSemana);
+        return EstadosGeneralesResource::collection($diasSemana);
     }
 }
