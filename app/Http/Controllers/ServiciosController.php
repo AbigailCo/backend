@@ -8,6 +8,7 @@ use App\Http\Requests\Servicio\ServicioFiltroRequest;
 use App\Http\Requests\Servicio\ServicioStoreRequest;
 use App\Http\Resources\Servicio\ServicioResource;
 use App\Models\EstadoGeneral;
+use App\Models\Reserva;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 
@@ -62,7 +63,14 @@ class ServiciosController extends Controller
             $servicio->diasDisponibles()->sync($validated['dias_disponibles']);
         }
 
-
+        if (isset($validated['categoria_id']) && $validated['categoria_id'] == "5") {
+            Reserva::create([
+                'servicio_id' => $servicio->id,
+                'proveedor_id' => $validated['proveedor_id'] ?? null,
+                'fecha_inicio' => $validated['fecha_inicio'],
+                'fecha_fin' => $validated['fecha_fin'],
+            ]);
+        }
 
         return response()->json([
             'message' => 'Servicio creado exitosamente',

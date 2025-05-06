@@ -38,6 +38,8 @@ class ServicioStoreRequest extends FormRequest
             'horarios.*' => 'string|regex:/^\d{2}:\d{2}$/',
             'dias_disponibles' => 'nullable|array',
             'dias_disponibles.*' => 'integer|exists:dias_semana,id',
+            'fecha_inicio' => 'nullable|date',
+            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
         ];
     }
 }
