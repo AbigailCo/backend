@@ -15,11 +15,21 @@ class SolicitudResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+        $esReserva = $this->servicio && $this->servicio->categoria_id == 5;
+
         return [
             'id' => $this->id,
-            'fecha_reserva' => $this->fecha_reserva,
-            'hora_reserva' => $this->hora_reserva,
-
+            'es_reserva' => $esReserva,
+            'reserva' => $esReserva && $this->reserva ? [
+            'id' => $this->reserva->id,
+            'fecha_inicio' => $this->reserva->fecha_inicio,
+            'fecha_fin' => $this->reserva->fecha_fin,
+            'estado' => $this->reserva->estadoGeneral ? [
+                'id' => $this->reserva->estadoGeneral->id,
+                'nombre' => $this->reserva->estadoGeneral->nombre,
+            ] : null,
+        ] : null,
+         
             'cliente' => $this->cliente ? [
                 'nombre' =>  $this->cliente->name,
                 'contacto' => $this->cliente->email

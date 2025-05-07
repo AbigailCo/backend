@@ -18,6 +18,7 @@ class ReservaSeeder extends Seeder
         $estadoActivo = EstadoGeneral::where('value', 'apro')->first();
         Reserva::create([
             'cliente_id' => '2',
+            'solicitud_id' => '1',
             'proveedor_id' => '3',
             'servicio_id' => '1',
             'fecha_inicio' => Carbon::parse('2025-04-24 11:00'),

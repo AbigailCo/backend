@@ -15,6 +15,7 @@ class Reserva extends Model
         'fecha_inicio',
         'fecha_fin',
         'estado_general_id',
+        'solicitud_id',
     ];
 
     // Relaciones
@@ -23,6 +24,10 @@ class Reserva extends Model
     public function proveedor() {
         return $this->belongsTo(User::class, 'proveedor_id');
     }
+    public function solicitud()
+{
+    return $this->belongsTo(Solicitud::class);
+}
 
     public function servicio() {
         return $this->belongsTo(Servicio::class);

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('solicitudes', function (Blueprint $table) {
-            $table->unsignedBigInteger('categoria_id')->nullable()->references('id')->on('categorias')->onDelete('set null');
+            
+           
             $table->string('fecha_inicio_reserva')->nullable();
             $table->string('fecha_fin_reserva')->nullable();
             $table->string('fecha_turno')->nullable();

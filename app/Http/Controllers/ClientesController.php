@@ -12,7 +12,7 @@ class ClientesController extends Controller
     public function mySolicitudesCliente($id)
     {
         
-        $solicitudes = Solicitud::with(['cliente', 'proveedor', 'producto', 'servicio'])
+        $solicitudes = Solicitud::with(['cliente', 'proveedor', 'producto', 'servicio', 'reserva', 'estadoGeneral'])
         ->where('cliente_id', $id)
         ->get();
         return SolicitudResource::collection($solicitudes);

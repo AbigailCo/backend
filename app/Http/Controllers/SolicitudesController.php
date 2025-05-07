@@ -52,6 +52,7 @@ class SolicitudesController extends Controller
         }
         if ($servicio && $servicio->categoria_id == 5) {
             Reserva::create([
+                'solicitud_id' => $solicitud->id,
                 'cliente_id' => $validatedData['cliente_id'],
                 'servicio_id' => $servicio->id,
                 'proveedor_id' => $servicio->proveedor_id,
