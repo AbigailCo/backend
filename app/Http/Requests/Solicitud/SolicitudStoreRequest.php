@@ -30,7 +30,8 @@ class SolicitudStoreRequest extends FormRequest
             'fecha_reserva' => 'nullable|regex:/^\d{4}-\d{2}-\d{2}$/',
             'hora_reserva'  => 'nullable|regex:/^\d{2}:\d{2}$/',
             'notas'          => 'nullable|string|max:1000',
-            
+            'fecha_inicio_reserva' => 'nullable|date',
+            'fecha_fin_reserva' => 'nullable|date|after:fecha_inicio_reserva',
         ];
     }
 }

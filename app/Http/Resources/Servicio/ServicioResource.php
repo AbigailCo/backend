@@ -36,7 +36,8 @@ class ServicioResource extends JsonResource
                 'duracion' => $this->duracion,
                 'ubicacion' => $this->ubicacion,
                'horarios' => $this->horarios,
-              
+              'fecha_inicio' => $this->fecha_inicio,
+                'fecha_fin' => $this->fecha_fin,
                 'estado_general_id' => $this->estado_general_id,
                 'created_at' => $this->created_at,
             ] : null,

@@ -10,9 +10,11 @@ class Reserva extends Model
 
     protected $fillable = [
         'proveedor_id',
+        'cliente_id',
         'servicio_id',
         'fecha_inicio',
         'fecha_fin',
+        'estado_general_id',
     ];
 
     // Relaciones

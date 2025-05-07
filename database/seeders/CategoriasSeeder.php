@@ -45,10 +45,10 @@ class CategoriasSeeder extends Seeder
         Categoria::firstOrCreate(
             ['id' => 4],
             [
-                'nombre' => 'Compra',
-                'label' => 'Compra',
-                'value' => 'com',
-                'descripcion' => 'Compra de producto'
+                'nombre' => 'Producto',
+                'label' => 'Producto',
+                'value' => 'pro',
+                'descripcion' => 'Venta de producto'
             ]
         );
 

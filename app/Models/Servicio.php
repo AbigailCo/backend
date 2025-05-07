@@ -25,6 +25,8 @@ class Servicio extends Model
     'proveedor_id',
     'estado_general_id',
     'horarios',
+    'fecha_inicio',
+    'fecha_fin',
   ];
 
   protected $casts = [

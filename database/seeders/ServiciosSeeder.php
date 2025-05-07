@@ -24,35 +24,28 @@ class ServiciosSeeder extends Seeder
         $servicio = Servicio::firstOrCreate(
             ['id' => 1],
             [
-                'nombre' => 'Servicios1',
-                'descripcion' => 'Descripción del Servicios 1',
+                'nombre' => 'Reserva',
+                'descripcion' => 'Descripción del Reserva 1',
                 'precio' => 100,
-                'stock' => 50,
-                'stock_minimo' => 10,
-                'duracion' => '1 HORA',
-                'ubicacion' => 'Consultorio 2',
-                'horarios' => ['09:00', '10:00', '11:00'],
                 'estado_general_id' => $estadoActivo->id,
                 'categoria_id' => $categoriaReserva?->id,
                 'codigo' => '123Servicios456',
-                'fecha_vencimiento' => '2024-12-31',
                 'proveedor_id' => 3,
+                'fecha_inicio' => now(),
+                'fecha_fin' => now()->addDays(30),
             ]
         );
 
         $servicio2 = Servicio::create([
             'nombre' => 'Consulta clínica',
-            'descripcion' => 'Turno de 30 minutos con la Dra. Pérez',
+            'descripcion' => 'Turno de 30 minutos con la Dra. Perez',
             'precio' => 5000,
-            'stock' => 50,
-            'stock_minimo' => 10,
             'duracion' => '30 minutos',
             'ubicacion' => 'Consultorio 1',
             'horarios' => ['09:00', '10:00', '11:00'],
             'estado_general_id' => $estadoActivo->id,
             'categoria_id' => $categoriaTurno?->id,
             'codigo' => '123Servicios123',
-            'fecha_vencimiento' => '2025-11-12',
             'proveedor_id' => 3,
         ]);
 

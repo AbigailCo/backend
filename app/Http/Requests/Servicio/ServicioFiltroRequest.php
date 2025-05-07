@@ -28,7 +28,7 @@ class ServicioFiltroRequest extends FormRequest
             'estado_general' => 'nullable|string',
             'fecha_vencimiento' => 'nullable|date',
             'servicio_id' => 'nullable|integer',
-            'dias_disponibles' => 'nullable|array',
+            'dias_disponibles' => 'nullable',
             'dias_disponibles.*' => 'string',
             'categoria_id' => [
                 'nullable',

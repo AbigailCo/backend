@@ -13,7 +13,6 @@ class TurnosController extends Controller
     {
         $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')
         ->where('estado_general_id', 1)
-        ->where('fecha_vencimiento', '>=', now())
         ->where('categoria_id', 6)
         ->get();
         return ServicioResource::collection($servicios);

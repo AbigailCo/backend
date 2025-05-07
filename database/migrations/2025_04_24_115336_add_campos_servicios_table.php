@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('duracion')->nullable(); 
             $table->string('ubicacion')->nullable();
             $table->json('horarios')->nullable(); 
+            $table->string('fecha_inicio')->nullable();
+            $table->string('fecha_fin')->nullable();
         });
         Schema::create('servicio_dia', function (Blueprint $table) {
             $table->id();

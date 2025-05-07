@@ -25,6 +25,8 @@ class SolicitudesSeeder extends Seeder
                 'estado_general_id' => $estadoActivo->id,
                 'fecha_solicitud' => '2024-12-31',
                 'fecha_respuesta' =>'2024-12-31',
+                'fecha_inicio_reserva' => '2025-05-07 13:14:13',
+                'fecha_fin_reserva' => '2025-05-12 13:14:13',
                
             ]
         );
@@ -38,8 +40,8 @@ class SolicitudesSeeder extends Seeder
                 'estado_general_id' => $estadoActivo->id,
                 'fecha_solicitud' => '2024-12-31',
                 'fecha_respuesta' =>'2024-12-31',  
-                'fecha_reserva' => '2025-04-17',
-                'hora_reserva' => '11:00'             
+                'fecha_turno' => '2025-04-17',
+                'hora_turno' => '11:00'             
             ]
         );
         

@@ -42,4 +42,14 @@ class ServicioStoreRequest extends FormRequest
             'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
         ];
     }
+    public function withValidator($validator)
+    {
+        $validator->sometimes('fecha_inicio', 'required', function ($input) {
+            return $input->categoria_id == 5;
+        });
+
+        $validator->sometimes('fecha_fin', 'required', function ($input) {
+            return $input->categoria_id == 5;
+        });
+    }
 }

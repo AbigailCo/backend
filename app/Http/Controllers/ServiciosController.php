@@ -45,7 +45,13 @@ class ServiciosController extends Controller
     {
         $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')
             ->where('estado_general_id', 1)
-            ->where('fecha_vencimiento', '>=', now())
+            ->where(function ($query) {
+                $query->where('categoria_id', '!=', 4)
+                      ->orWhere(function ($q) {
+                          $q->where('categoria_id', 4)
+                            ->whereDate('fecha_vencimiento', '>=', now());
+                      });
+            })
             ->get();
         return response()->json(ServicioResource::collection($servicios));
     }
@@ -53,23 +59,21 @@ class ServiciosController extends Controller
     {
         $validated = $request->validated();
         $estadoActivo = EstadoGeneral::where('value', 'act')->first();
-
-        $servicio = Servicio::create([
+        $data = [
             ...$validated,
             'estado_general_id' => $estadoActivo->id,
-            'horarios' => json_encode($validated['horarios'] ?? []),
-        ]);
-        if (!empty($validated['dias_disponibles'])) {
-            $servicio->diasDisponibles()->sync($validated['dias_disponibles']);
+            'horarios' => $validated['horarios'] ?? [],
+        ];
+
+        if (isset($validated['categoria_id']) && $validated['categoria_id'] == 5) {
+            $data['fecha_inicio'] = $validated['fecha_inicio'];
+            $data['fecha_fin'] = $validated['fecha_fin'];
         }
 
-        if (isset($validated['categoria_id']) && $validated['categoria_id'] == "5") {
-            Reserva::create([
-                'servicio_id' => $servicio->id,
-                'proveedor_id' => $validated['proveedor_id'] ?? null,
-                'fecha_inicio' => $validated['fecha_inicio'],
-                'fecha_fin' => $validated['fecha_fin'],
-            ]);
+        $servicio = Servicio::create($data);
+
+        if (!empty($validated['dias_disponibles'])) {
+            $servicio->diasDisponibles()->sync($validated['dias_disponibles']);
         }
 
         return response()->json([

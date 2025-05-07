@@ -8,6 +8,7 @@ use App\Http\Requests\Solicitud\SolicitudStoreRequest;
 use App\Http\Resources\Solicitudes\SolicitudResource;
 use App\Models\EstadoGeneral;
 use App\Models\Producto;
+use App\Models\Reserva;
 use App\Models\Servicio;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
@@ -48,6 +49,15 @@ class SolicitudesController extends Controller
                 $servicio->stock -= 1;
                 $servicio->save();
             }
+        }
+        if ($servicio && $servicio->categoria_id == 5) {
+            Reserva::create([
+                'cliente_id' => $validatedData['cliente_id'],
+                'servicio_id' => $servicio->id,
+                'proveedor_id' => $servicio->proveedor_id,
+                'fecha_inicio' => $validatedData['fecha_inicio_reserva'],
+                'fecha_fin' => $validatedData['fecha_fin_reserva'],
+            ]);
         }
 
         return response()->json([

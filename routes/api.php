@@ -7,11 +7,13 @@ use App\Http\Controllers\DiasSemanaController;
 use App\Http\Controllers\EstadosGeneralesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ProveedoresController;
+use App\Http\Controllers\ReservasController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\SolicitudesController;
 use App\Http\Controllers\TurnosController;
 use App\Http\Controllers\UserController;
+use App\Models\Reserva;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
@@ -105,3 +107,6 @@ Route::get('/servicios/{id}/horarios-reservados', [SolicitudesController::class,
 
 //Turnos
 Route::get('/turnos', [TurnosController::class, 'getTurnos']);
+
+//Reservas
+Route::get('/reservas', [ReservasController::class, 'getReservas']);
