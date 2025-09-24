@@ -14,7 +14,7 @@ class TurnosController extends Controller
         $servicios = Servicio::with('categoria', 'proveedor', 'estadoGeneral', 'diasDisponibles')
         ->where('estado_general_id', 1)
         ->where('categoria_id', 6)
-        ->get();
+        ->paginate(1);
         return ServicioResource::collection($servicios);
     }
    

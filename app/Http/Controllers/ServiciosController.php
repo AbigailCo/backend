@@ -52,8 +52,8 @@ class ServiciosController extends Controller
                             ->whereDate('fecha_vencimiento', '>=', now());
                       });
             })
-            ->get();
-        return response()->json(ServicioResource::collection($servicios));
+            ->paginate(1);
+            return ServicioResource::collection($servicios);
     }
     public function storeServicio(ServicioStoreRequest $request)
     {
@@ -102,8 +102,8 @@ class ServiciosController extends Controller
     {
         $servicios = Servicio::with(['proveedor', 'estadoGeneral', 'categoria', 'diasDisponibles'])
             ->filtrar($request->validated())
-            ->get();
+            ->paginate(1);
 
-        return response()->json(ServicioResource::collection($servicios));
+            return ServicioResource::collection($servicios);
     }
 }

@@ -16,7 +16,8 @@ class ProductosController extends Controller
   
     public function getProductos()
     {
-        $productos = Producto::with('categoria', 'proveedor', 'estado')->get();
+        $productos = Producto::with('categoria', 'proveedor', 'estado')
+        ->paginate(1);
         return ProductoResource::collection($productos);
     }
 
@@ -25,8 +26,8 @@ class ProductosController extends Controller
         $productos = Producto::with('categoria', 'proveedor', 'estado')
             ->where('estado_general_id', 1)
             ->where('fecha_vencimiento', '>=', now())
-            ->get();
-            return response()->json(ProductoResource::collection($productos));
+            ->paginate(1);
+            return ProductoResource::collection($productos);
     }
 
     public function getProducto($id)
@@ -86,8 +87,7 @@ class ProductosController extends Controller
     {
         $productos = Producto::with(['proveedor', 'estado', 'categoria'])
             ->filtrar($request->validated())
-            ->get();
-
-        return response()->json(ProductoResource::collection($productos));
+            ->paginate(1);
+            return ProductoResource::collection($productos);
     }
 }

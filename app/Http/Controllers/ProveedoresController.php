@@ -22,7 +22,9 @@ class ProveedoresController extends Controller
     }
     public function myServicios($id)
     {
-        $servicios = Servicio::with('categoria')->where('proveedor_id', $id)->get();
+        $servicios = Servicio::with('categoria')
+        ->where('proveedor_id', $id)
+        ->paginate(1);
         return ServicioResource::collection($servicios);
     }
 
